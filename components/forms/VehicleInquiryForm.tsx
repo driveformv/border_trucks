@@ -59,6 +59,10 @@ export function VehicleInquiryForm({ vehicleInfo }: VehicleInquiryFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
+  const defaultMessage = vehicleInfo 
+    ? `I am interested in the ${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model} (Stock #${vehicleInfo.stockNumber}). Please provide more information.`
+    : "I am interested in this vehicle. Please provide more information.";
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -68,11 +72,16 @@ export function VehicleInquiryForm({ vehicleInfo }: VehicleInquiryFormProps) {
       company: "",
       inquiryType: "general",
       timeframe: "no_rush",
-      message: `I am interested in the ${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model} (Stock #${vehicleInfo.stockNumber}). Please provide more information.`,
+      message: defaultMessage,
     },
   });
 
   const onSubmit = async (data: FormData) => {
+    if (!vehicleInfo) {
+      toast.error("Vehicle information is missing");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const response = await fetch("/api/vehicle-inquiry", {
@@ -99,27 +108,11 @@ export function VehicleInquiryForm({ vehicleInfo }: VehicleInquiryFormProps) {
         throw new Error(result.error || "Failed to submit inquiry");
       }
 
-      // Track conversion
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'conversion', {
-          'send_to': 'AW-CONVERSION_ID/CONVERSION_LABEL',
-          'event_category': 'Vehicle Inquiry',
-          'event_label': `${vehicleInfo.year} ${vehicleInfo.make} ${vehicleInfo.model}`,
-          'value': 1
-        });
-      }
-
-      // Show success message before redirect
-      toast.success("Thank you! Redirecting to confirmation page...");
-      
-      // Short delay before redirect to show the success message
-      setTimeout(() => {
-        router.push('/thank-you');
-      }, 1500);
-      
+      toast.success("Your inquiry has been submitted successfully!");
+      form.reset();
+      router.refresh();
     } catch (error) {
-      console.error("Error submitting form:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to submit inquiry. Please try again.");
+      toast.error(error instanceof Error ? error.message : "Failed to submit inquiry");
     } finally {
       setIsSubmitting(false);
     }
@@ -127,15 +120,23 @@ export function VehicleInquiryForm({ vehicleInfo }: VehicleInquiryFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="bg-[#1C1C1C]/5 dark:bg-white/5 p-4 rounded-md border border-[#1C1C1C]/10 dark:border-white/10">
-          <h3 className="font-semibold text-lg mb-2 text-[#1C1C1C] dark:text-white">Vehicle Information</h3>
-          <p className="text-[#1C1C1C]/80 dark:text-white/80">
-            {vehicleInfo.year} {vehicleInfo.make} {vehicleInfo.model}
-          </p>
-          <p className="text-[#1C1C1C]/60 dark:text-white/60">
-            Stock #{vehicleInfo.stockNumber}
-          </p>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="bg-white dark:bg-[#2C2C2C] p-6 rounded-lg shadow-sm border border-[#1C1C1C]/10 dark:border-white/10">
+          <h3 className="text-xl font-bold mb-3 text-[#1C1C1C] dark:text-white">Vehicle Information</h3>
+          {vehicleInfo ? (
+            <div>
+              <p className="text-lg font-medium text-[#1C1C1C] dark:text-white">
+                {vehicleInfo.year} {vehicleInfo.make} {vehicleInfo.model}
+              </p>
+              <p className="text-[#1C1C1C]/70 dark:text-white/70 mt-1">
+                Stock #{vehicleInfo.stockNumber}
+              </p>
+            </div>
+          ) : (
+            <p className="text-[#1C1C1C]/70 dark:text-white/70">
+              No vehicle information available
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -144,15 +145,15 @@ export function VehicleInquiryForm({ vehicleInfo }: VehicleInquiryFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#1C1C1C] dark:text-white">Name</FormLabel>
+                <FormLabel className="text-[#1C1C1C] dark:text-white font-medium">Name</FormLabel>
                 <FormControl>
                   <Input 
                     placeholder="John Doe" 
                     {...field} 
-                    className="bg-white dark:bg-[#2C2C2C] border-[#1C1C1C]/10 dark:border-white/10 text-[#1C1C1C] dark:text-white placeholder:text-[#1C1C1C]/40 dark:placeholder:text-white/40" 
+                    className="h-12 bg-white dark:bg-[#2C2C2C] border-2 border-[#1C1C1C]/10 dark:border-white/10 rounded-lg text-[#1C1C1C] dark:text-white placeholder:text-[#1C1C1C]/40 dark:placeholder:text-white/40 focus:border-[#FF2A00] focus:ring-1 focus:ring-[#FF2A00] transition-all" 
                   />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage className="text-[#FF2A00]" />
               </FormItem>
             )}
           />
@@ -162,15 +163,16 @@ export function VehicleInquiryForm({ vehicleInfo }: VehicleInquiryFormProps) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#1C1C1C] dark:text-white">Email</FormLabel>
+                <FormLabel className="text-[#1C1C1C] dark:text-white font-medium">Email</FormLabel>
                 <FormControl>
                   <Input 
+                    type="email" 
                     placeholder="john@example.com" 
                     {...field} 
-                    className="bg-white dark:bg-[#2C2C2C] border-[#1C1C1C]/10 dark:border-white/10 text-[#1C1C1C] dark:text-white placeholder:text-[#1C1C1C]/40 dark:placeholder:text-white/40" 
+                    className="h-12 bg-white dark:bg-[#2C2C2C] border-2 border-[#1C1C1C]/10 dark:border-white/10 rounded-lg text-[#1C1C1C] dark:text-white placeholder:text-[#1C1C1C]/40 dark:placeholder:text-white/40 focus:border-[#FF2A00] focus:ring-1 focus:ring-[#FF2A00] transition-all" 
                   />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage className="text-[#FF2A00]" />
               </FormItem>
             )}
           />
@@ -180,15 +182,16 @@ export function VehicleInquiryForm({ vehicleInfo }: VehicleInquiryFormProps) {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#1C1C1C] dark:text-white">Phone</FormLabel>
+                <FormLabel className="text-[#1C1C1C] dark:text-white font-medium">Phone</FormLabel>
                 <FormControl>
                   <Input 
+                    type="tel" 
                     placeholder="(555) 123-4567" 
                     {...field} 
-                    className="bg-white dark:bg-[#2C2C2C] border-[#1C1C1C]/10 dark:border-white/10 text-[#1C1C1C] dark:text-white placeholder:text-[#1C1C1C]/40 dark:placeholder:text-white/40" 
+                    className="h-12 bg-white dark:bg-[#2C2C2C] border-2 border-[#1C1C1C]/10 dark:border-white/10 rounded-lg text-[#1C1C1C] dark:text-white placeholder:text-[#1C1C1C]/40 dark:placeholder:text-white/40 focus:border-[#FF2A00] focus:ring-1 focus:ring-[#FF2A00] transition-all" 
                   />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage className="text-[#FF2A00]" />
               </FormItem>
             )}
           />
@@ -198,15 +201,15 @@ export function VehicleInquiryForm({ vehicleInfo }: VehicleInquiryFormProps) {
             name="company"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#1C1C1C] dark:text-white">Company (Optional)</FormLabel>
+                <FormLabel className="text-[#1C1C1C] dark:text-white font-medium">Company (Optional)</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="Your company name" 
+                    placeholder="Company Name" 
                     {...field} 
-                    className="bg-white dark:bg-[#2C2C2C] border-[#1C1C1C]/10 dark:border-white/10 text-[#1C1C1C] dark:text-white placeholder:text-[#1C1C1C]/40 dark:placeholder:text-white/40" 
+                    className="h-12 bg-white dark:bg-[#2C2C2C] border-2 border-[#1C1C1C]/10 dark:border-white/10 rounded-lg text-[#1C1C1C] dark:text-white placeholder:text-[#1C1C1C]/40 dark:placeholder:text-white/40 focus:border-[#FF2A00] focus:ring-1 focus:ring-[#FF2A00] transition-all" 
                   />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage className="text-[#FF2A00]" />
               </FormItem>
             )}
           />
@@ -218,22 +221,22 @@ export function VehicleInquiryForm({ vehicleInfo }: VehicleInquiryFormProps) {
             name="inquiryType"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#1C1C1C] dark:text-white">Inquiry Type</FormLabel>
+                <FormLabel className="text-[#1C1C1C] dark:text-white font-medium">Inquiry Type</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="bg-[#2C2C2C] border-white/10 text-white">
+                    <SelectTrigger className="h-12 bg-white dark:bg-[#2C2C2C] border-2 border-[#1C1C1C]/10 dark:border-white/10 rounded-lg text-[#1C1C1C] dark:text-white focus:border-[#FF2A00] focus:ring-1 focus:ring-[#FF2A00] transition-all">
                       <SelectValue placeholder="Select inquiry type" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="bg-[#2C2C2C] border-white/10">
-                    <SelectItem className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white" value="purchase">Purchase Information</SelectItem>
-                    <SelectItem className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white" value="test_drive">Schedule Test Drive</SelectItem>
-                    <SelectItem className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white" value="trade_in">Trade-In Valuation</SelectItem>
-                    <SelectItem className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white" value="financing">Financing Options</SelectItem>
-                    <SelectItem className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white" value="general">General Inquiry</SelectItem>
+                  <SelectContent className="bg-white dark:bg-[#2C2C2C] border-2 border-[#1C1C1C]/10 dark:border-white/10">
+                    <SelectItem value="purchase" className="text-[#1C1C1C] dark:text-white hover:bg-[#FF2A00]/10">Purchase</SelectItem>
+                    <SelectItem value="test_drive" className="text-[#1C1C1C] dark:text-white hover:bg-[#FF2A00]/10">Test Drive</SelectItem>
+                    <SelectItem value="trade_in" className="text-[#1C1C1C] dark:text-white hover:bg-[#FF2A00]/10">Trade-In</SelectItem>
+                    <SelectItem value="financing" className="text-[#1C1C1C] dark:text-white hover:bg-[#FF2A00]/10">Financing</SelectItem>
+                    <SelectItem value="general" className="text-[#1C1C1C] dark:text-white hover:bg-[#FF2A00]/10">General Inquiry</SelectItem>
                   </SelectContent>
                 </Select>
-                <FormMessage className="text-red-500" />
+                <FormMessage className="text-[#FF2A00]" />
               </FormItem>
             )}
           />
@@ -243,21 +246,21 @@ export function VehicleInquiryForm({ vehicleInfo }: VehicleInquiryFormProps) {
             name="timeframe"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-[#1C1C1C] dark:text-white">Purchase Timeframe</FormLabel>
+                <FormLabel className="text-[#1C1C1C] dark:text-white font-medium">Purchase Timeframe</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger className="bg-[#2C2C2C] border-white/10 text-white">
+                    <SelectTrigger className="h-12 bg-white dark:bg-[#2C2C2C] border-2 border-[#1C1C1C]/10 dark:border-white/10 rounded-lg text-[#1C1C1C] dark:text-white focus:border-[#FF2A00] focus:ring-1 focus:ring-[#FF2A00] transition-all">
                       <SelectValue placeholder="Select timeframe" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent className="bg-[#2C2C2C] border-white/10">
-                    <SelectItem className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white" value="immediate">Ready to Purchase</SelectItem>
-                    <SelectItem className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white" value="this_week">Within 1 Week</SelectItem>
-                    <SelectItem className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white" value="this_month">Within 1 Month</SelectItem>
-                    <SelectItem className="text-white hover:bg-white/10 focus:bg-white/10 focus:text-white" value="no_rush">Still Researching</SelectItem>
+                  <SelectContent className="bg-white dark:bg-[#2C2C2C] border-2 border-[#1C1C1C]/10 dark:border-white/10">
+                    <SelectItem value="immediate" className="text-[#1C1C1C] dark:text-white hover:bg-[#FF2A00]/10">Immediate</SelectItem>
+                    <SelectItem value="this_week" className="text-[#1C1C1C] dark:text-white hover:bg-[#FF2A00]/10">This Week</SelectItem>
+                    <SelectItem value="this_month" className="text-[#1C1C1C] dark:text-white hover:bg-[#FF2A00]/10">This Month</SelectItem>
+                    <SelectItem value="no_rush" className="text-[#1C1C1C] dark:text-white hover:bg-[#FF2A00]/10">No Rush</SelectItem>
                   </SelectContent>
                 </Select>
-                <FormMessage className="text-red-500" />
+                <FormMessage className="text-[#FF2A00]" />
               </FormItem>
             )}
           />
@@ -268,25 +271,25 @@ export function VehicleInquiryForm({ vehicleInfo }: VehicleInquiryFormProps) {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-[#1C1C1C] dark:text-white">Message</FormLabel>
+              <FormLabel className="text-[#1C1C1C] dark:text-white font-medium">Message</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Tell us more about your needs..."
-                  className="min-h-[100px] bg-white dark:bg-[#2C2C2C] border-[#1C1C1C]/10 dark:border-white/10 text-[#1C1C1C] dark:text-white placeholder:text-[#1C1C1C]/40 dark:placeholder:text-white/40"
-                  {...field}
+                <Textarea 
+                  placeholder="Type your message here" 
+                  {...field} 
+                  className="min-h-[120px] bg-white dark:bg-[#2C2C2C] border-2 border-[#1C1C1C]/10 dark:border-white/10 rounded-lg text-[#1C1C1C] dark:text-white placeholder:text-[#1C1C1C]/40 dark:placeholder:text-white/40 focus:border-[#FF2A00] focus:ring-1 focus:ring-[#FF2A00] transition-all" 
                 />
               </FormControl>
-              <FormMessage className="text-red-500" />
+              <FormMessage className="text-[#FF2A00]" />
             </FormItem>
           )}
         />
 
         <Button 
           type="submit" 
-          className="w-full bg-white hover:bg-white/90 text-[#1C1C1C] font-semibold" 
           disabled={isSubmitting}
+          className="w-full h-12 bg-[#1C1C1C] hover:bg-[#FF2A00] text-white font-medium rounded-lg transition-colors"
         >
-          {isSubmitting ? "Sending..." : "Submit Inquiry"}
+          {isSubmitting ? "Sending..." : "Send Message"}
         </Button>
       </form>
     </Form>

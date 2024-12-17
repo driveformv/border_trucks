@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Phone, FileText, Share2 } from "lucide-react";
-import { ImageGallery } from "@/components/vehicles/gallery/ImageGallery";
 import type { Vehicle } from "@/types/vehicle";
 import { VehicleInquiryModal } from "./VehicleInquiryModal";
 
@@ -31,13 +30,9 @@ export function VehicleDetailClient({ vehicle }: VehicleDetailClientProps) {
           <Share2 className="w-4 h-4" /> Share
         </Button>
       </div>
-      
-      <div className="mb-8">
-        <ImageGallery images={vehicle.images} />
-      </div>
 
       <VehicleInquiryModal
-        isOpen={showInquiryModal}
+        open={showInquiryModal}
         onClose={() => setShowInquiryModal(false)}
         vehicleInfo={{
           id: vehicle.id,

@@ -18,19 +18,19 @@ export const sampleVehicles: Vehicle[] = [
         id: "1a",
         url: "/assets/images/47913_hx620_ko_daycab_rgb.png[1024_-1xoxar].png",
         isPrimary: true,
-        caption: "HX620 Day Cab"
+        caption: "Front View"
       },
       {
         id: "1b",
         url: "/assets/images/47913_hx620_ko_crane_rgb.png[1024_-1xoxar].png",
         isPrimary: false,
-        caption: "HX620 Crane"
+        caption: "Side View"
       },
       {
         id: "1c",
         url: "/assets/images/47913_hx620_ko_mixer_rgb.png[1024_-1xoxar].png",
         isPrimary: false,
-        caption: "HX620 Mixer"
+        caption: "Rear View"
       }
     ],
     engineMake: "Cummins",
@@ -49,7 +49,6 @@ export const sampleVehicles: Vehicle[] = [
     },
     features: [
       "LED Headlights",
-      "Air Conditioning",
       "Power Windows",
       "Bluetooth",
       "GPS Navigation"
@@ -71,15 +70,15 @@ export const sampleVehicles: Vehicle[] = [
     images: [
       {
         id: "2a",
-        url: "/assets/images/48458_skyrise_ko_baseline_rgb_gray.png[1024_-1xoxar].png",
+        url: "/assets/images/47913_hx620_ko_daycab_rgb.png[1024_-1xoxar].png",
         isPrimary: true,
-        caption: "Skyrise Front View"
+        caption: "Front View"
       },
       {
         id: "2b",
-        url: "/assets/images/48458_daycab_ko_baseline_rgb_gray.png[1024_-1xoxar].png",
+        url: "/assets/images/47913_hx620_ko_crane_rgb.png[1024_-1xoxar].png",
         isPrimary: false,
-        caption: "Day Cab Front View"
+        caption: "Side View"
       }
     ],
     engineMake: "Cummins",
@@ -122,15 +121,15 @@ export const sampleVehicles: Vehicle[] = [
     images: [
       {
         id: "3a",
-        url: "/assets/images/ko_hv515_crane_v011.0001.png[1024_-1xoxar].png",
+        url: "/assets/images/47913_hx620_ko_daycab_rgb.png[1024_-1xoxar].png",
         isPrimary: true,
-        caption: "HV515 Crane"
+        caption: "Front View"
       },
       {
         id: "3b",
-        url: "/assets/images/ko_hv515_snow_plow_v006.1001.png[1024_-1xoxar].png",
+        url: "/assets/images/47913_hx620_ko_crane_rgb.png[1024_-1xoxar].png",
         isPrimary: false,
-        caption: "HV515 Snow Plow"
+        caption: "Side View"
       }
     ],
     engineMake: "Cummins",
@@ -172,15 +171,15 @@ export const sampleVehicles: Vehicle[] = [
     images: [
       {
         id: "4a",
-        url: "/assets/images/ko_hv615_mixer_v003.1001.png[1024_-1xoxar].png",
+        url: "/assets/images/47913_hx620_ko_daycab_rgb.png[1024_-1xoxar].png",
         isPrimary: true,
-        caption: "HV615 Mixer"
+        caption: "Front View"
       },
       {
         id: "4b",
-        url: "/assets/images/ko_mv_minimixer_truck_v001_srgb.png[1024_-1xoxar].png",
+        url: "/assets/images/47913_hx620_ko_crane_rgb.png[1024_-1xoxar].png",
         isPrimary: false,
-        caption: "MV Mini Mixer"
+        caption: "Side View"
       }
     ],
     status: "Available",
@@ -215,15 +214,15 @@ export const sampleVehicles: Vehicle[] = [
     images: [
       {
         id: "5a",
-        url: "/assets/images/45846_mv_box_truck_ko_2021_cmyk.png[1024_-1xoxar].png",
+        url: "/assets/images/47913_hx620_ko_daycab_rgb.png[1024_-1xoxar].png",
         isPrimary: true,
-        caption: "MV Box Truck"
+        caption: "Front View"
       },
       {
         id: "5b",
-        url: "/assets/images/45846_mv_service_ko_2021_cmyk.png[1024_-1xoxar].png",
+        url: "/assets/images/47913_hx620_ko_crane_rgb.png[1024_-1xoxar].png",
         isPrimary: false,
-        caption: "MV Service Truck"
+        caption: "Side View"
       }
     ],
     status: "Available",

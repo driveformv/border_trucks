@@ -8,18 +8,25 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { VehicleInquiryForm } from "@/components/forms/VehicleInquiryForm";
-import type { Vehicle } from "@/types/vehicle";
+
+interface VehicleInfo {
+  id: string;
+  year: number;
+  make: string;
+  model: string;
+  stockNumber: string;
+}
 
 interface VehicleInquiryModalProps {
   open: boolean;
   onClose: () => void;
-  vehicle: Vehicle;
+  vehicleInfo: VehicleInfo;
 }
 
 export function VehicleInquiryModal({
   open,
   onClose,
-  vehicle,
+  vehicleInfo,
 }: VehicleInquiryModalProps) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -34,15 +41,7 @@ export function VehicleInquiryModal({
           </DialogDescription>
         </DialogHeader>
         <div className="p-4 sm:p-6">
-          <VehicleInquiryForm 
-            vehicleInfo={{
-              id: vehicle.id,
-              year: vehicle.year,
-              make: vehicle.make,
-              model: vehicle.model,
-              stockNumber: vehicle.stockNumber,
-            }} 
-          />
+          <VehicleInquiryForm vehicleInfo={vehicleInfo} />
         </div>
       </DialogContent>
     </Dialog>

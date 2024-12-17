@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { useState, useEffect } from 'react';
 import type { Vehicle } from '@/types/vehicle';
+import { sampleVehicles } from '@/data/sampleVehicles';
 
 export function useVehicles(filters?: { 
   condition?: string; 
@@ -14,38 +13,29 @@ export function useVehicles(filters?: {
   const [error, setError] = useState<string | null>(null);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
 
+  // Load static data
   useEffect(() => {
-    let q = collection(db, 'vehicles');
-    
-    if (filters) {
-      if (filters.condition) {
-        q = query(q, where('condition', '==', filters.condition));
+    try {
+      let filtered = [...sampleVehicles];
+      
+      if (filters) {
+        if (filters.condition) {
+          filtered = filtered.filter(v => v.condition === filters.condition);
+        }
+        if (filters.make) {
+          filtered = filtered.filter(v => v.make === filters.make);
+        }
+        if (filters.class) {
+          filtered = filtered.filter(v => v.class === filters.class);
+        }
       }
-      if (filters.make) {
-        q = query(q, where('make', '==', filters.make));
-      }
-      if (filters.class) {
-        q = query(q, where('class', '==', filters.class));
-      }
+
+      setVehicles(filtered);
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to load vehicles');
+      setLoading(false);
     }
-
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const vehicleData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Vehicle[];
-        setVehicles(vehicleData);
-        setLoading(false);
-      },
-      (err) => {
-        setError(err.message);
-        setLoading(false);
-      }
-    );
-
-    return () => unsubscribe();
   }, [filters?.condition, filters?.make, filters?.class]);
 
   // Handle search filtering

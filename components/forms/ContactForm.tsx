@@ -81,14 +81,14 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-[#1C1C1C] p-6 rounded-lg">
         {vehicleInfo && (
-          <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
-            <h3 className="font-semibold text-lg mb-2 text-slate-900 dark:text-slate-100">Vehicle Information</h3>
-            <p className="text-slate-700 dark:text-slate-300">
+          <div className="bg-[#1C1C1C]/5 dark:bg-white/5 p-4 rounded-md border border-[#1C1C1C]/10 dark:border-white/10">
+            <h3 className="font-semibold text-lg mb-2 text-[#1C1C1C] dark:text-white">Vehicle Information</h3>
+            <p className="text-[#1C1C1C]/80 dark:text-white/80">
               {vehicleInfo.year} {vehicleInfo.make} {vehicleInfo.model}
             </p>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-[#1C1C1C]/60 dark:text-white/60">
               Stock #{vehicleInfo.stockNumber}
             </p>
           </div>
@@ -100,15 +100,15 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-900 dark:text-slate-100">Name</FormLabel>
+                <FormLabel className="text-white">Name</FormLabel>
                 <FormControl>
                   <Input 
                     placeholder="John Doe" 
                     {...field} 
-                    className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100" 
+                    className="bg-white text-black border-white/10 placeholder:text-black/60" 
                   />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -118,15 +118,16 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-900 dark:text-slate-100">Email</FormLabel>
+                <FormLabel className="text-white">Email</FormLabel>
                 <FormControl>
                   <Input 
+                    type="email" 
                     placeholder="john@example.com" 
                     {...field} 
-                    className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100" 
+                    className="bg-white text-black border-white/10 placeholder:text-black/60" 
                   />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -136,15 +137,16 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-900 dark:text-slate-100">Phone</FormLabel>
+                <FormLabel className="text-white">Phone</FormLabel>
                 <FormControl>
                   <Input 
+                    type="tel" 
                     placeholder="(555) 123-4567" 
                     {...field} 
-                    className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100" 
+                    className="bg-white text-black border-white/10 placeholder:text-black/60" 
                   />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -154,15 +156,15 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
             name="company"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-slate-900 dark:text-slate-100">Company (Optional)</FormLabel>
+                <FormLabel className="text-white">Company (Optional)</FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="Your company name" 
+                    placeholder="Company Name" 
                     {...field} 
-                    className="bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100" 
+                    className="bg-white text-black border-white/10 placeholder:text-black/60" 
                   />
                 </FormControl>
-                <FormMessage className="text-red-500" />
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -173,25 +175,25 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-slate-900 dark:text-slate-100">Message</FormLabel>
+              <FormLabel className="text-white">Message</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Tell us more about your needs..."
-                  className="min-h-[100px] bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100"
-                  {...field}
+                <Textarea 
+                  placeholder="Type your message here." 
+                  className="min-h-[120px] bg-white text-black border-white/10 placeholder:text-black/60" 
+                  {...field} 
                 />
               </FormControl>
-              <FormMessage className="text-red-500" />
+              <FormMessage />
             </FormItem>
           )}
         />
 
         <Button 
           type="submit" 
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold" 
           disabled={isSubmitting}
+          className="w-full bg-white hover:bg-white/90 text-black font-medium"
         >
-          {isSubmitting ? "Sending..." : "Submit Message"}
+          {isSubmitting ? "Sending..." : "Send Message"}
         </Button>
       </form>
     </Form>
