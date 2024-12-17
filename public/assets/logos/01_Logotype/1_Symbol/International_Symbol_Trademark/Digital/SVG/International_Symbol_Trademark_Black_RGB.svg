@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 720 630">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #000;
+      }
+
+      .cls-1, .cls-2 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: #ff2a00;
+      }
+
+      .cls-3 {
+        display: none;
+      }
+    </style>
+  </defs>
+  <g id="Artwork">
+    <g id="Symbol">
+      <g id="Symbol-2" data-name="Symbol">
+        <polygon class="cls-1" points="350 0 0 350 280 630 350 0"/>
+        <polygon class="cls-1" points="370 0 720 350 440 630 370 0"/>
+      </g>
+    </g>
+    <path class="cls-1" d="M598.57,0h50.73v11.23h-19.53v43.77h-11.67V11.23h-19.53V0ZM657.15,0h13.02l18.63,30.3,18.63-30.3h12.57v54.99h-11.67V18.63l-16.38,25.59h-6.73l-16.61-26.26v37.04h-11.46V0h0Z"/>
+  </g>
+  <g id="_135_" data-name="135%" class="cls-3">
+    <g>
+      <g>
+        <polygon class="cls-2" points="350 0 0 350 280 630 350 0"/>
+        <polygon class="cls-2" points="370 0 720 350 440 630 370 0"/>
+      </g>
+      <path class="cls-2" d="M600.79,0h49.81v11.02h-19.17v42.98h-11.46V11.02h-19.18V0ZM658.31,0h12.78l18.29,29.75,18.29-29.75h12.34v53.99h-11.46V18.29l-16.08,25.12h-6.61l-16.3-25.78v36.36h-11.25V0h0Z"/>
+    </g>
+  </g>
+</svg>
