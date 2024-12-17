@@ -5,11 +5,11 @@ interface LogoProps {
   className?: string;
 }
 
-export function Logo({ variant = "white", className = "h-12 w-12" }: LogoProps) {
+export function Logo({ className = "h-16 w-auto" }: LogoProps) {
   return (
     <img 
-      src={`/assets/logos/international-${variant}.svg`}
-      alt="International Logo"
+      src="/assets/logos/Border International-03.png"
+      alt="Border International"
       className={className}
     />
   );

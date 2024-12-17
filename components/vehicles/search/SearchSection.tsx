@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,9 +8,11 @@ import { FilterButton } from "./FilterButton";
 
 interface SearchSectionProps {
   onSearch: (filters: any) => void;
+  onClear?: () => void;
+  searchFilters: any;
 }
 
-export function SearchSection({ onSearch }: SearchSectionProps) {
+export function SearchSection({ onSearch, onClear, searchFilters }: SearchSectionProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     make: "",
@@ -32,6 +34,30 @@ export function SearchSection({ onSearch }: SearchSectionProps) {
       handleSearch();
     }
   };
+
+  const handleClear = () => {
+    setSearchTerm("");
+    setFilters({
+      make: "",
+      year: "",
+      priceRange: "",
+    });
+    if (onClear) {
+      onClear();
+    }
+  };
+
+  // Listen for external clear events
+  useEffect(() => {
+    if (Object.keys(searchFilters).length === 0) {
+      setSearchTerm("");
+      setFilters({
+        make: "",
+        year: "",
+        priceRange: "",
+      });
+    }
+  }, [searchFilters]);
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-lg mb-8">

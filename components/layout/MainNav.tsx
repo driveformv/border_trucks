@@ -23,9 +23,8 @@ export function MainNav() {
     <nav className="bg-[#1C1C1C]">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
-          <Link href="/" className="flex items-center space-x-3">
-            <Logo />
-            <span className="text-xl md:text-2xl font-bold tracking-wider text-white">INTERNATIONAL</span>
+          <Link href="/" className="flex items-center">
+            <Logo className="h-16 w-auto" />
           </Link>
 
           {/* Mobile menu button */}

@@ -8,6 +8,10 @@ import { sampleVehicles } from "@/lib/data/sampleVehicles";
 export default function InventoryPage() {
   const [searchFilters, setSearchFilters] = useState({});
 
+  const handleClearSearch = () => {
+    setSearchFilters({});
+  };
+
   return (
     <main className="min-h-screen bg-white">
       {/* Header Section */}
@@ -23,12 +27,20 @@ export default function InventoryPage() {
 
       {/* Search Section */}
       <div className="container mx-auto px-4 -mt-8">
-        <SearchSection onSearch={setSearchFilters} />
+        <SearchSection 
+          onSearch={setSearchFilters} 
+          onClear={handleClearSearch}
+          searchFilters={searchFilters}
+        />
       </div>
 
       {/* Vehicle List */}
       <div className="container mx-auto px-4">
-        <VehicleList initialVehicles={sampleVehicles} searchFilters={searchFilters} />
+        <VehicleList 
+          initialVehicles={sampleVehicles} 
+          searchFilters={searchFilters} 
+          onClearSearch={handleClearSearch}
+        />
       </div>
     </main>
   );
