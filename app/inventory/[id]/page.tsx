@@ -2,7 +2,7 @@ import { sampleVehicles } from "@/lib/data/sampleVehicles";
 import { VehicleDetailClient } from "@/components/vehicles/VehicleDetailClient";
 import { MapPin, Clock, AlertTriangle } from "lucide-react";
 import type { Vehicle } from "@/types/vehicle";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ImageGallery } from "@/components/vehicles/ImageGallery";
 
