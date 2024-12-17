@@ -1,1 +1,1 @@
-web: npm start
+web: npx serve@latest out -l $PORT
