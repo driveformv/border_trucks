@@ -4,7 +4,7 @@ import { ref, uploadBytes, deleteObject, getDownloadURL } from 'firebase/storage
 import { storage, auth } from '@/lib/firebase/config';
 import { XCircle, GripHorizontal } from 'lucide-react';
 import Image from 'next/image';
-import imageCompression from 'browser-image-compression';
+import { default as ImageCompressionLib } from 'browser-image-compression';
 import {
   DndContext,
   closestCenter,
@@ -143,19 +143,15 @@ export default function ImageUploader({
   );
 
   const compressImage = async (file: File) => {
-    if (!imageCompression) {
-      console.warn('Image compression not available, using original file');
-      return file;
-    }
-
-    const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 1920,
-      useWebWorker: true
-    };
-    
     try {
-      const compressedFile = await imageCompression(file, options);
+      // Try to compress the image
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: false // Changed to false to avoid web worker issues
+      };
+      
+      const compressedFile = await ImageCompressionLib(file, options);
       return compressedFile;
     } catch (error) {
       console.warn('Image compression failed, using original file:', error);
