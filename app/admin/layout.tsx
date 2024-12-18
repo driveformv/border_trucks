@@ -1,41 +1,45 @@
 'use client';
 
-import { useAuth } from '@/lib/firebase/auth-context';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/lib/firebase/config';
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && !user && window.location.pathname !== '/admin/login') {
-      router.push('/admin/login');
-    }
-  }, [user, loading, router]);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user && pathname !== '/admin/login') {
+        router.push('/admin/login');
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [router, pathname]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <LoadingSpinner size="lg" />
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
-  if (!user && window.location.pathname !== '/admin/login') {
-    return null;
+  // Don't show anything extra on the login page
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#f8f9fa]">
+      {/* Admin content */}
+      <main className="max-w-7xl mx-auto px-4 py-6">
         {children}
-      </div>
+      </main>
     </div>
   );
 }

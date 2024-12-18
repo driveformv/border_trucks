@@ -24,6 +24,7 @@ import { CSS } from '@dnd-kit/utilities';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import { useEffect } from 'react';
 import { useAuth } from '@/lib/firebase/auth-context';
+import { Camera, Trash2, X } from 'lucide-react';
 
 interface ImageUploaderProps {
   vehicleId: string;
@@ -56,7 +57,7 @@ function SortableImage({ url, onDelete, isUploading }: SortableImageProps) {
     <div
       ref={setNodeRef}
       style={style}
-      className="relative group aspect-square bg-gray-50"
+      className="relative aspect-square bg-[#f3f4f6] rounded-lg overflow-hidden"
     >
       {isUploading ? (
         <div className="absolute inset-0 flex items-center justify-center">
@@ -64,26 +65,18 @@ function SortableImage({ url, onDelete, isUploading }: SortableImageProps) {
         </div>
       ) : (
         <>
-          <Image
+          <img
             src={url}
             alt="Vehicle image"
-            fill
-            className="object-cover rounded-lg"
+            className="w-full h-full object-cover"
           />
-          <button
-            onClick={onDelete}
-            className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-lg 
-              opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          >
-            <XCircle className="w-6 h-6 text-red-500 hover:text-red-600" />
-          </button>
-          <div
-            {...attributes}
-            {...listeners}
-            className="absolute top-2 left-2 p-1 bg-white rounded-full shadow-lg cursor-move
-              opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-          >
-            <GripHorizontal className="w-6 h-6 text-gray-500" />
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+            <button
+              onClick={onDelete}
+              className="p-2 bg-white rounded-full hover:bg-gray-50"
+            >
+              <Trash2 className="h-4 w-4 text-red-600" />
+            </button>
           </div>
         </>
       )}
@@ -108,21 +101,22 @@ function PreviewImage({ file, onRemove }: PreviewImageProps) {
   }, [file]);
 
   return (
-    <div className="relative aspect-square bg-gray-50">
+    <div className="relative aspect-square bg-[#f3f4f6] rounded-lg overflow-hidden">
       {preview && (
         <>
-          <Image
+          <img
             src={preview}
             alt="Preview"
-            fill
-            className="object-cover rounded-lg"
+            className="w-full h-full object-cover"
           />
-          <button
-            onClick={onRemove}
-            className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-lg"
-          >
-            <XCircle className="w-6 h-6 text-red-500 hover:text-red-600" />
-          </button>
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+            <button
+              onClick={onRemove}
+              className="p-2 bg-white rounded-full hover:bg-gray-50"
+            >
+              <X className="h-4 w-4 text-gray-600" />
+            </button>
+          </div>
         </>
       )}
     </div>
@@ -225,19 +219,23 @@ export default function ImageUploader({
 
   const handleDelete = async (urlToDelete: string) => {
     try {
-      // Extract the path from the URL
-      const path = urlToDelete.split('/o/')[1].split('?')[0];
-      const decodedPath = decodeURIComponent(path);
-      const imageRef = ref(storage, decodedPath);
-      
-      await deleteObject(imageRef);
-      
+      // First update the database to remove the URL
       const updatedImages = images.filter(url => url !== urlToDelete);
       setImages(updatedImages);
-      onImagesUpdate(updatedImages);
-    } catch (err) {
+      onImagesUpdate(updatedImages);  // This updates the database
+
+      // Then try to delete from storage if it exists
+      try {
+        const imageRef = ref(storage, urlToDelete);
+        await deleteObject(imageRef);
+      } catch (storageError) {
+        // If file doesn't exist in storage, that's okay
+        // We still want to remove it from the database
+        console.log('File may have already been deleted from storage:', storageError);
+      }
+    } catch (error) {
+      console.error('Error handling image deletion:', error);
       setError('Failed to delete image. Please try again.');
-      console.error('Delete error:', err);
     }
   };
 
@@ -255,91 +253,99 @@ export default function ImageUploader({
     }
   };
 
+  // Reset state when vehicle changes
+  useEffect(() => {
+    setImages(existingImages);
+    setPreviewFiles([]);
+    setUploadingImages([]);
+    setError(null);
+  }, [vehicleId, vehicleType, existingImages]);
+
   return (
     <div className="space-y-4">
-      <div
-        {...getRootProps()}
-        className={`
-          p-8 border-2 border-dashed rounded-lg text-center cursor-pointer
-          transition-colors duration-200 ease-in-out
-          ${isDragActive 
-            ? 'border-blue-500 bg-blue-50' 
-            : 'border-gray-300 hover:border-blue-400'
-          }
-        `}
-      >
-        <input {...getInputProps()} />
-        <div className="space-y-2">
-          <div className="text-4xl mb-2">📸</div>
-          {isDragActive ? (
-            <p className="text-blue-500">Drop the images here...</p>
-          ) : (
-            <>
-              <p className="text-gray-600">Drag & drop images here, or click to select</p>
-              <p className="text-sm text-gray-400">Supports: JPG, PNG, WebP (Max: 10MB)</p>
-            </>
-          )}
+      <div className="bg-white border border-gray-300 rounded-lg p-6">
+        <div {...getRootProps()} className="space-y-2 text-center cursor-pointer">
+          <input {...getInputProps()} />
+          <div className="mx-auto flex justify-center">
+            <Camera className="h-12 w-12 text-gray-400" />
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">
+              Drag & drop images here, or click to select
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Supports: JPG, PNG, WebP (Max: 10MB)
+            </p>
+          </div>
         </div>
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 text-red-600 rounded-lg">
-          {error}
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <p className="text-sm text-red-600">{error}</p>
         </div>
       )}
 
-      {/* Preview Grid */}
-      {previewFiles.length > 0 && (
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {previewFiles.map((file, index) => (
-              <PreviewImage
-                key={`${file.name}_${index}`}
-                file={file}
-                onRemove={() => {
-                  setPreviewFiles(prev => prev.filter((_, i) => i !== index));
+      {/* Preview Area */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {[...previewFiles, ...uploadingImages].map((file, index) => (
+          <div key={index} className="relative aspect-square bg-[#f3f4f6] rounded-lg overflow-hidden">
+            <img
+              src={typeof file === 'string' ? file : URL.createObjectURL(file)}
+              alt="Preview"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+              <button
+                onClick={() => {
+                  if (typeof file === 'string') {
+                    setUploadingImages(prev => prev.filter((_, i) => i !== index));
+                  } else {
+                    setPreviewFiles(prev => prev.filter((_, i) => i !== index));
+                  }
                 }}
-              />
-            ))}
+                className="p-2 bg-white rounded-full hover:bg-gray-50"
+              >
+                <X className="h-4 w-4 text-gray-600" />
+              </button>
+            </div>
           </div>
-          <div className="flex justify-end">
-            <button
-              onClick={uploadImages}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 
-                transition-colors duration-200"
-            >
-              Upload {previewFiles.length} {previewFiles.length === 1 ? 'Image' : 'Images'}
-            </button>
-          </div>
+        ))}
+      </div>
+
+      {/* Existing Images */}
+      {images.length > 0 && (
+        <div>
+          <h4 className="font-medium text-gray-900 mb-3">Current Images</h4>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={images} strategy={rectSortingStrategy}>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {images.map((url, index) => (
+                  <SortableImage
+                    key={url}
+                    url={url}
+                    onDelete={() => handleDelete(url)}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         </div>
       )}
 
-      {/* Uploaded Images Grid */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext items={images} strategy={rectSortingStrategy}>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {uploadingImages.map((url) => (
-              <SortableImage
-                key={url}
-                url={url}
-                onDelete={() => {}}
-                isUploading={true}
-              />
-            ))}
-            {images.map((url) => (
-              <SortableImage
-                key={url}
-                url={url}
-                onDelete={() => handleDelete(url)}
-              />
-            ))}
-          </div>
-        </SortableContext>
-      </DndContext>
+      {previewFiles.length > 0 && (
+        <button
+          onClick={uploadImages}
+          disabled={!user}
+          className="w-full flex justify-center py-2 px-4 text-sm font-medium text-white bg-[#1a56db] rounded-md hover:bg-[#1e429f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1a56db] disabled:opacity-50"
+        >
+          {uploadingImages.length > 0 ? 'Uploading...' : 'Upload Images'}
+        </button>
+      )}
     </div>
   );
 }
