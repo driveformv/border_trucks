@@ -4,7 +4,7 @@ import { ref, uploadBytes, deleteObject, getDownloadURL } from 'firebase/storage
 import { storage, auth } from '@/lib/firebase/config';
 import { XCircle, GripHorizontal } from 'lucide-react';
 import Image from 'next/image';
-import { default as ImageCompressionLib } from 'browser-image-compression';
+import imageCompression from 'browser-image-compression';
 import {
   DndContext,
   closestCenter,
@@ -30,7 +30,7 @@ interface ImageUploaderProps {
   vehicleId: string;
   vehicleType: 'trucks' | 'trailers';
   existingImages: string[];
-  onImagesUpdate: (urls: string[]) => void;
+  onImagesUpdate?: (urls: string[]) => void;
 }
 
 interface SortableImageProps {
@@ -123,12 +123,12 @@ function PreviewImage({ file, onRemove }: PreviewImageProps) {
   );
 }
 
-export default function ImageUploader({
+const ImageUploader: React.FC<ImageUploaderProps> = ({
   vehicleId,
   vehicleType,
   existingImages = [],
-  onImagesUpdate
-}: ImageUploaderProps) {
+  onImagesUpdate = () => {}
+}) => {
   const [images, setImages] = useState<string[]>(existingImages);
   const [uploadingImages, setUploadingImages] = useState<string[]>([]);
   const [previewFiles, setPreviewFiles] = useState<File[]>([]);
@@ -144,17 +144,21 @@ export default function ImageUploader({
 
   const compressImage = async (file: File) => {
     try {
-      // Try to compress the image
+      if (typeof imageCompression !== 'function') {
+        console.warn('Image compression not available, using original file');
+        return file;
+      }
+
       const options = {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
-        useWebWorker: false // Changed to false to avoid web worker issues
+        useWebWorker: false
       };
       
-      const compressedFile = await ImageCompressionLib(file, options);
+      const compressedFile = await imageCompression(file, options);
       return compressedFile;
     } catch (error) {
-      console.warn('Image compression failed, using original file:', error);
+      console.error('Image compression failed:', error);
       return file;
     }
   };
@@ -351,3 +355,5 @@ export default function ImageUploader({
     </div>
   );
 }
+
+export default ImageUploader;

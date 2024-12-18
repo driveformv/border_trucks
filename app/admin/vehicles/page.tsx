@@ -261,6 +261,17 @@ export default function VehicleManagement() {
                     vehicleId={selectedVehicle.id}
                     vehicleType={selectedType}
                     existingImages={selectedVehicle.images || []}
+                    onImagesUpdate={(newImages) => {
+                      // Update the vehicles state with new images
+                      setVehicles(prev => ({
+                        ...prev,
+                        [selectedType]: prev[selectedType].map(vehicle =>
+                          vehicle.id === selectedVehicle.id
+                            ? { ...vehicle, images: newImages }
+                            : vehicle
+                        )
+                      }));
+                    }}
                   />
                 ) : (
                   <div className="h-64 flex items-center justify-center text-gray-500 bg-[#f3f4f6] rounded-lg">
