@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { AuthProvider } from "@/lib/firebase/auth-context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,10 +22,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(inter.className, "min-h-screen flex flex-col")}>
-        <Navbar />
-        <main className="flex-grow">{children}</main>
-        <Footer />
-        <Toaster />
+        <AuthProvider>
+          <Navbar />
+          <div className="flex-grow">
+            {children}
+          </div>
+          <Footer />
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );
