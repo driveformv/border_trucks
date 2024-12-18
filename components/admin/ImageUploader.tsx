@@ -143,6 +143,11 @@ export default function ImageUploader({
   );
 
   const compressImage = async (file: File) => {
+    if (!imageCompression) {
+      console.warn('Image compression not available, using original file');
+      return file;
+    }
+
     const options = {
       maxSizeMB: 1,
       maxWidthOrHeight: 1920,
@@ -150,7 +155,8 @@ export default function ImageUploader({
     };
     
     try {
-      return await imageCompression(file, options);
+      const compressedFile = await imageCompression(file, options);
+      return compressedFile;
     } catch (error) {
       console.warn('Image compression failed, using original file:', error);
       return file;
