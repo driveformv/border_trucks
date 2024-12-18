@@ -7,9 +7,10 @@ export function HeroSection() {
   return (
     <div className="relative h-screen">
       <div 
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: "url('/assets/images/International_Photography-Film-01.png')"
+          backgroundImage: "url('https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/images%2F3l0a6682_r2.tif%5B1024_-1xoxar%5D.png?alt=media&token=041f9913-2734-4b85-acf5-d780a05d7023')",
+          backgroundColor: '#1a1a1a'
         }}
       >
         <div className="absolute inset-0 bg-black/50"></div>

@@ -16,19 +16,19 @@ export const sampleVehicles: Vehicle[] = [
     images: [
       {
         id: "1a",
-        url: "/assets/images/47913_hx620_ko_daycab_rgb.png[1024_-1xoxar].png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrucks%2F47913_hx620_ko_daycab_rgb.png[1024_-1xoxar].png?alt=media&token=041f9913-2734-4b85-acf5-d780a05d7023",
         isPrimary: true,
         caption: "Front View"
       },
       {
         id: "1b",
-        url: "/assets/images/48458_daycab_ko_baseline_cmyk_gray.tif[1024_-1xoxar].png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrucks%2F48458_daycab_ko_baseline_cmyk_gray.tif[1024_-1xoxar].png?alt=media&token=041f9913-2734-4b85-acf5-d780a05d7023",
         isPrimary: false,
         caption: "Side View"
       },
       {
         id: "1c",
-        url: "/assets/images/48458_thumbnails_gray_daycab.png[1024_-1xoxar].png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrucks%2F48458_thumbnails_gray_daycab.png[1024_-1xoxar].png?alt=media&token=041f9913-2734-4b85-acf5-d780a05d7023",
         isPrimary: false,
         caption: "Rear View"
       }
@@ -70,19 +70,19 @@ export const sampleVehicles: Vehicle[] = [
     images: [
       {
         id: "2a",
-        url: "/assets/images/48458_skyrise_ko_baseline_cmyk_gray.tif[1024_-1xoxar].png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrucks%2F48458_skyrise_ko_baseline_cmyk_gray.tif[1024_-1xoxar].png?alt=media&token=041f9913-2734-4b85-acf5-d780a05d7023",
         isPrimary: true,
         caption: "Front View"
       },
       {
         id: "2b",
-        url: "/assets/images/48458_thumbnails_gray_skyrise.png[1024_-1xoxar].png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrucks%2F48458_thumbnails_gray_skyrise.png[1024_-1xoxar].png?alt=media&token=041f9913-2734-4b85-acf5-d780a05d7023",
         isPrimary: false,
         caption: "Side View"
       },
       {
         id: "2c",
-        url: "/assets/images/47033skyriseko_base.png[1024_-1xoxar].png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrucks%2F47033skyriseko_base.png[1024_-1xoxar].png?alt=media&token=041f9913-2734-4b85-acf5-d780a05d7023",
         isPrimary: false,
         caption: "Rear View"
       }
@@ -127,13 +127,13 @@ export const sampleVehicles: Vehicle[] = [
     images: [
       {
         id: "3a",
-        url: "/assets/images/48458_daycab_ko_baseline_cmyk_gray.tif[1024_-1xoxar].png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrucks%2F48458_daycab_ko_baseline_cmyk_gray.tif[1024_-1xoxar].png?alt=media&token=041f9913-2734-4b85-acf5-d780a05d7023",
         isPrimary: true,
         caption: "Front View"
       },
       {
         id: "3b",
-        url: "/assets/images/48458_thumbnails_gray_daycab.png[1024_-1xoxar].png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrucks%2F48458_thumbnails_gray_daycab.png[1024_-1xoxar].png?alt=media&token=041f9913-2734-4b85-acf5-d780a05d7023",
         isPrimary: false,
         caption: "Side View"
       }
@@ -168,28 +168,28 @@ export const sampleVehicles: Vehicle[] = [
     type: "trailer",
     condition: "New",
     make: "Hyundai",
-    model: "Dry Van",
+    model: "Composite",
     year: 2024,
     price: 55000,
     stockNumber: "HTR001",
     vin: "2HWYAZHR5MH123456",
-    description: "New 2024 Hyundai 53' Dry Van Trailer",
+    description: "New 2024 Hyundai Composite Trailer",
     images: [
       {
         id: "4a",
-        url: "/assets/images/Original1.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FComposite1.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: true,
         caption: "Front View"
       },
       {
         id: "4b",
-        url: "/assets/images/Original2.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FComposite2.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: false,
         caption: "Side View"
       },
       {
         id: "4c",
-        url: "/assets/images/Original3.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FComposite3.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: false,
         caption: "Interior View"
       }
@@ -209,7 +209,7 @@ export const sampleVehicles: Vehicle[] = [
     ],
     category: ["dry-van"],
     location: "El Paso, TX",
-    trailerType: "Dry Van",
+    trailerType: "HyCube",
     axles: 2
   },
   {
@@ -217,28 +217,28 @@ export const sampleVehicles: Vehicle[] = [
     type: "trailer",
     condition: "New",
     make: "Hyundai",
-    model: "Reefer",
+    model: "ThermoTech",
     year: 2024,
     price: 85000,
     stockNumber: "HTR002",
     vin: "2HWYAZHR5MH567890",
-    description: "New 2024 Hyundai 53' Refrigerated Trailer",
+    description: "New 2024 Hyundai ThermoTech Refrigerated Trailer",
     images: [
       {
         id: "5a",
-        url: "/assets/images/ThermoTech1.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FThermoTech1.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: true,
         caption: "Front View"
       },
       {
         id: "5b",
-        url: "/assets/images/ThermoTech2.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FThermoTech2.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: false,
         caption: "Side View"
       },
       {
         id: "5c",
-        url: "/assets/images/ThermoTech3.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FThermoTech3.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: false,
         caption: "Interior View"
       }
@@ -275,19 +275,19 @@ export const sampleVehicles: Vehicle[] = [
     images: [
       {
         id: "tr3a",
-        url: "/assets/images/HyCube1.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FHyCube1.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: true,
         caption: "Front View"
       },
       {
         id: "tr3b",
-        url: "/assets/images/HyCube2.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FHyCube2.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: false,
         caption: "Side View"
       },
       {
         id: "tr3c",
-        url: "/assets/images/HyCube3.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FHyCube3.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: false,
         caption: "Rear View"
       }
@@ -322,19 +322,19 @@ export const sampleVehicles: Vehicle[] = [
     images: [
       {
         id: "tr4a",
-        url: "/assets/images/ThermoTech1.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FThermoTech1.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: true,
         caption: "Front View"
       },
       {
         id: "tr4b",
-        url: "/assets/images/ThermoTech2.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FThermoTech2.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: false,
         caption: "Side View"
       },
       {
         id: "tr4c",
-        url: "/assets/images/ThermoTech3.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FThermoTech3.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: false,
         caption: "Interior View"
       }
@@ -365,23 +365,23 @@ export const sampleVehicles: Vehicle[] = [
     price: 48000,
     stockNumber: "TRL005",
     vin: "5HYXT2824RB345678",
-    description: "New 2024 Hyundai Composite XT Dry Van Trailer with lightweight design",
+    description: "New 2024 Hyundai Composite XT Trailer with lightweight design",
     images: [
       {
         id: "tr5a",
-        url: "/assets/images/Composite1.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FCompositeXT1.jpg?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: true,
         caption: "Front View"
       },
       {
         id: "tr5b",
-        url: "/assets/images/Composite2.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FCompositeXT2.jpg?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: false,
         caption: "Side View"
       },
       {
         id: "tr5c",
-        url: "/assets/images/Composite3.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FCompositeXT3.jpg?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: false,
         caption: "Interior View"
       }
@@ -391,16 +391,18 @@ export const sampleVehicles: Vehicle[] = [
       length: "53 ft",
       width: "102 inches",
       height: "13'6\"",
-      capacity: "55,000 lbs"
+      capacity: "52,000 lbs"
     },
     features: [
-      "Composite Panel Technology",
-      "Weight Optimized Design",
-      "Enhanced Durability",
-      "Premium Scuff Liner"
+      "Thermo King Refrigeration Unit",
+      "Temperature Monitoring System",
+      "Air Ride Suspension",
+      "Stainless Steel Rear Frame"
     ],
-    category: ["dry-van"],
-    location: "El Paso, TX"
+    category: ["reefer"],
+    location: "Las Cruces, NM",
+    trailerType: "ThermoTech",
+    axles: 2
   },
   {
     id: "NTR006",
@@ -412,23 +414,23 @@ export const sampleVehicles: Vehicle[] = [
     price: 42000,
     stockNumber: "TRL006",
     vin: "5HYOG2824RB901234",
-    description: "New 2024 Hyundai Original Dry Van Trailer with standard features",
+    description: "New 2024 Hyundai Original Trailer with standard features",
     images: [
       {
         id: "tr6a",
-        url: "/assets/images/Original1.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FOriginal1.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: true,
         caption: "Front View"
       },
       {
         id: "tr6b",
-        url: "/assets/images/Original2.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FOriginal2.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: false,
         caption: "Side View"
       },
       {
         id: "tr6c",
-        url: "/assets/images/Original3.png",
+        url: "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Ftrailers%2FOriginal3.png?alt=media&token=212d9bb2-9400-4316-a13f-017167990e57",
         isPrimary: false,
         caption: "Interior View"
       }
@@ -438,16 +440,18 @@ export const sampleVehicles: Vehicle[] = [
       length: "53 ft",
       width: "102 inches",
       height: "13'6\"",
-      capacity: "55,000 lbs"
+      capacity: "52,000 lbs"
     },
     features: [
-      "Standard LED Lighting",
-      "Spring Suspension",
-      "Galvanized Steel Rear Frame",
-      "Wood Floor"
+      "Carrier Refrigeration Unit",
+      "Aluminum Roof",
+      "LED Lights",
+      "Air Ride Suspension"
     ],
-    category: ["dry-van"],
-    location: "Las Cruces, NM"
+    category: ["reefer"],
+    location: "Las Cruces, NM",
+    trailerType: "Reefer",
+    axles: 2
   }
 ];
 

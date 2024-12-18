@@ -13,7 +13,7 @@ export default function ServicesPage() {
       <div 
         className="relative bg-cover bg-center min-h-[400px] md:h-[600px] flex items-center"
         style={{
-          backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/assets/images/3l0a6682_r2.tif[1024_-1xoxar].png')",
+          backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/images%2F3l0a6682_r2.tif%5B1024_-1xoxar%5D.png?alt=media&token=041f9913-2734-4b85-acf5-d780a05d7023')",
           backgroundPosition: "center 30%"
         }}
       >
