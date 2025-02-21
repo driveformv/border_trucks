@@ -23,8 +23,11 @@ export function MainNav() {
     <nav className="bg-[#1C1C1C]">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center space-x-4">
             <Logo className="h-16 w-auto" />
+            <span className="text-white text-xl font-semibold hidden sm:inline">
+              Border Trucks & Trailers
+            </span>
           </Link>
 
           {/* Mobile menu button */}

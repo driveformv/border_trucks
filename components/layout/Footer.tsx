@@ -146,13 +146,24 @@ export function Footer() {
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-gray-800 pt-8 text-gray-400 text-sm">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p>&copy; {new Date().getFullYear()} Border International. All rights reserved.</p>
-            <div className="flex space-x-6">
-              <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-white">Terms of Use</Link>
-              <Link href="/sitemap" className="hover:text-white">Sitemap</Link>
+        <div className="border-t border-gray-800 pt-8 mt-12">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400 text-sm mb-4 md:mb-0">
+              &copy; {new Date().getFullYear()} Border International. All rights reserved.
+            </p>
+            <div className="flex items-center space-x-6">
+              <Link href="/privacy" className="text-gray-400 hover:text-white text-sm">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="text-gray-400 hover:text-white text-sm">
+                Terms of Service
+              </Link>
+              <Link 
+                href="/admin/login"
+                className="text-gray-400 hover:text-white text-sm flex items-center"
+              >
+                Admin Login
+              </Link>
             </div>
           </div>
         </div>

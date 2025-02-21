@@ -16,7 +16,9 @@ export function VehicleShowcase({ vehicles }: VehicleShowcaseProps) {
         <Card key={vehicle.id} className="overflow-hidden group">
           <div className="aspect-[16/9] relative overflow-hidden">
             <img
-              src={vehicle.images[0].url}
+              src={vehicle.images && vehicle.images.length > 0 
+                ? (typeof vehicle.images[0] === 'string' ? vehicle.images[0] : vehicle.images[0].url)
+                : "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Fplaceholder.jpg?alt=media"}
               alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
               className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-300"
             />

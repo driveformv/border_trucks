@@ -18,18 +18,37 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showInquiryModal, setShowInquiryModal] = useState(false);
 
+  // Default image if none available
+  const defaultImage = "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Fplaceholder.jpg?alt=media";
+
+  // Safely get image URL
+  const getImageUrl = () => {
+    if (!vehicle.images || !vehicle.images.length) {
+      return defaultImage;
+    }
+    const image = vehicle.images[currentImageIndex];
+    if (!image) {
+      return defaultImage;
+    }
+    return typeof image === 'string' ? image : image.url;
+  };
+
   const nextImage = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev + 1) % vehicle.images.length);
+    if (vehicle.images && vehicle.images.length > 0) {
+      setCurrentImageIndex((prev) => (prev + 1) % vehicle.images.length);
+    }
   };
 
   const previousImage = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrentImageIndex((prev) => 
-      prev === 0 ? vehicle.images.length - 1 : prev - 1
-    );
+    if (vehicle.images && vehicle.images.length > 0) {
+      setCurrentImageIndex((prev) => 
+        prev === 0 ? vehicle.images.length - 1 : prev - 1
+      );
+    }
   };
 
   const handleRequestInfo = (e: React.MouseEvent) => {
@@ -42,7 +61,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative aspect-[16/9]">
         <Image
-          src={vehicle.images[currentImageIndex].url}
+          src={getImageUrl()}
           alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
           width={800}
           height={450}
@@ -50,7 +69,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
           priority={currentImageIndex === 0}
         />
 
-        {vehicle.images.length > 1 && (
+        {vehicle.images && vehicle.images.length > 1 && (
           <>
             <button
               onClick={previousImage}
