@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { ref, uploadBytes, deleteObject, getDownloadURL } from 'firebase/storage';
-import { storage, auth } from '@/lib/firebase/config';
+import { ref as storageRef, uploadBytes, deleteObject, getDownloadURL } from 'firebase/storage';
+import { ref as dbRef, set } from 'firebase/database';
+import { storage, db } from '@/lib/firebase/config';
 import { XCircle, GripHorizontal } from 'lucide-react';
 import Image from 'next/image';
 import imageCompression from 'browser-image-compression';
@@ -172,6 +173,16 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     setPreviewFiles(prev => [...prev, ...acceptedFiles]);
   }, [user]);
 
+  const updateDatabase = async (updatedImages: string[]) => {
+    try {
+      const vehicleRef = dbRef(db, `vehicles/${vehicleType}/${vehicleId}/images`);
+      await set(vehicleRef, updatedImages);
+    } catch (error) {
+      console.error('Error updating database:', error);
+      throw error;
+    }
+  };
+
   const uploadImages = async () => {
     if (!user) {
       setError('You must be logged in to upload images');
@@ -198,13 +209,18 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           const timestamp = Date.now();
           const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
           const path = `vehicles/${vehicleType}/${vehicleId}/${timestamp}_${safeFileName}`;
-          const storageRef = ref(storage, path);
-          await uploadBytes(storageRef, file);
-          return getDownloadURL(storageRef);
+          const imageRef = storageRef(storage, path);
+          await uploadBytes(imageRef, file);
+          return getDownloadURL(imageRef);
         })
       );
       
       const updatedImages = [...images, ...newUrls];
+      
+      // Update database first
+      await updateDatabase(updatedImages);
+      
+      // Then update local state and notify parent
       setImages(updatedImages);
       onImagesUpdate(updatedImages);
     } catch (err: any) {
@@ -225,18 +241,20 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
   const handleDelete = async (urlToDelete: string) => {
     try {
-      // First update the database to remove the URL
+      // Update database first
       const updatedImages = images.filter(url => url !== urlToDelete);
-      setImages(updatedImages);
-      onImagesUpdate(updatedImages);  // This updates the database
+      await updateDatabase(updatedImages);
 
-      // Then try to delete from storage if it exists
+      // Then update local state and notify parent
+      setImages(updatedImages);
+      onImagesUpdate(updatedImages);
+
+      // Finally try to delete from storage
       try {
-        const imageRef = ref(storage, urlToDelete);
+        const imageRef = storageRef(storage, urlToDelete);
         await deleteObject(imageRef);
       } catch (storageError) {
         // If file doesn't exist in storage, that's okay
-        // We still want to remove it from the database
         console.log('File may have already been deleted from storage:', storageError);
       }
     } catch (error) {
@@ -245,17 +263,25 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     }
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = async (event: any) => {
     const { active, over } = event;
 
     if (active.id !== over.id) {
-      setImages((items) => {
-        const oldIndex = items.indexOf(active.id);
-        const newIndex = items.indexOf(over.id);
-        const newOrder = arrayMove(items, oldIndex, newIndex);
+      try {
+        const oldIndex = images.indexOf(active.id);
+        const newIndex = images.indexOf(over.id);
+        const newOrder = arrayMove(images, oldIndex, newIndex);
+        
+        // Update database first
+        await updateDatabase(newOrder);
+        
+        // Then update local state and notify parent
+        setImages(newOrder);
         onImagesUpdate(newOrder);
-        return newOrder;
-      });
+      } catch (error) {
+        console.error('Error updating image order:', error);
+        setError('Failed to update image order. Please try again.');
+      }
     }
   };
 

@@ -26,7 +26,18 @@ export default function CareersPage() {
             <p className="text-gray-600 mb-6">
               Browse our current job opportunities across all departments.
             </p>
-            <Button className="w-full bg-[#1C1C1C] hover:bg-[#2C2C2C]">View Jobs</Button>
+            <Button 
+              className="w-full bg-[#1C1C1C] hover:bg-[#2C2C2C]"
+              asChild
+            >
+              <a 
+                href="https://mvtholdings.jobs/jobs?company=Border%20International%20Trucks"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View Jobs
+              </a>
+            </Button>
           </Card>
 
           <Card className="p-8">
