@@ -44,6 +44,6 @@ export interface Vehicle {
   specs: Record<string, string | number>;
   features: string[];
   category: string[];
-  status: 'Available' | 'Sold' | 'Pending';
+  status: 'Available' | 'Sold' | 'Pending' | 'active' | 'inactive';
   location: string;
 }

@@ -16,10 +16,12 @@ interface SearchFilters {
 
 interface InventoryClientProps {
   filterSections: FilterSection[];
+  isAdmin?: boolean;
 }
 
-export function InventoryClient({ filterSections }: InventoryClientProps) {
+export function InventoryClient({ filterSections, isAdmin }: InventoryClientProps) {
   const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
+  const [showInactive, setShowInactive] = useState(false);
 
   const handleSearch = (filters: SearchFilters) => {
     setSearchFilters(filters);
@@ -42,6 +44,21 @@ export function InventoryClient({ filterSections }: InventoryClientProps) {
         </div>
       </div>
 
+      {/* Admin Controls */}
+      {isAdmin && (
+        <div className="container mx-auto px-4 py-4 bg-gray-100 rounded-lg mb-4">
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showInactive}
+              onChange={(e) => setShowInactive(e.target.checked)}
+              className="form-checkbox h-5 w-5 text-blue-600"
+            />
+            <span className="text-gray-700">Show Inactive Vehicles</span>
+          </label>
+        </div>
+      )}
+
       {/* Search Section */}
       <div className="container mx-auto px-4 -mt-8">
         <SearchSection 
@@ -57,6 +74,7 @@ export function InventoryClient({ filterSections }: InventoryClientProps) {
         <VehicleList 
           searchFilters={searchFilters} 
           onClearSearch={handleClearSearch}
+          includeInactive={isAdmin && showInactive}
         />
       </div>
     </main>

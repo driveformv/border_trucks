@@ -5,7 +5,7 @@ import { db } from '@/lib/firebase';
 import { ref, onValue, off } from 'firebase/database';
 import { applyFilters } from '@/lib/utils/filterUtils';
 
-export function useVehicles() {
+export function useVehicles(includeInactive: boolean = false) {
   const [allVehicles, setAllVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,19 +46,23 @@ export function useVehicles() {
     // Set up realtime listeners
     onValue(trucksRef, (snapshot) => {
       const trucksData = snapshot.exists() ? 
-        Object.entries(snapshot.val()).map(([id, data]) => normalizeVehicleData({
-          id,
-          type: 'truck',
-          ...(data as any)
-        })) : [];
+        Object.entries(snapshot.val())
+          .map(([id, data]) => normalizeVehicleData({
+            id,
+            type: 'truck',
+            ...(data as any)
+          }))
+          .filter(vehicle => includeInactive || vehicle.status === 'active') : [];
 
       onValue(trailersRef, (snapshot) => {
         const trailersData = snapshot.exists() ? 
-          Object.entries(snapshot.val()).map(([id, data]) => normalizeVehicleData({
-            id,
-            type: 'trailer',
-            ...(data as any)
-          })) : [];
+          Object.entries(snapshot.val())
+            .map(([id, data]) => normalizeVehicleData({
+              id,
+              type: 'trailer',
+              ...(data as any)
+            }))
+            .filter(vehicle => includeInactive || vehicle.status === 'active') : [];
 
         const vehicleData = [...trucksData, ...trailersData];
         console.log('Realtime update received:', vehicleData);
@@ -80,7 +84,7 @@ export function useVehicles() {
       off(trucksRef);
       off(trailersRef);
     };
-  }, []); // Only fetch once on mount
+  }, [includeInactive]); // Re-fetch when includeInactive changes
 
   // Generate filter options from actual data
   const filterSections = useMemo(() => {

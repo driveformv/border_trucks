@@ -1,7 +1,7 @@
 const Client = require('ssh2-sftp-client');
 const { parse } = require('csv-parse/sync');
 const { initializeApp } = require('firebase/app');
-const { getDatabase, ref, set, update } = require('firebase/database');
+const { getDatabase, ref, get, set, update } = require('firebase/database');
 const { getAuth, signInWithEmailAndPassword } = require('firebase/auth');
 
 const firebaseConfig = {
@@ -20,7 +20,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 
 // Transform truck data to match Vehicle interface
-function transformTruckData(truck) {
+function transformTruckData(truck, existingData = {}) {
   // Helper to handle undefined/null values
   const clean = (obj) => {
     Object.keys(obj).forEach(key => {
@@ -32,6 +32,15 @@ function transformTruckData(truck) {
     });
     return obj;
   };
+
+  // Keep existing images or use placeholder if none exist
+  const images = existingData.images && existingData.images.length > 0 
+    ? existingData.images 
+    : [{
+        id: 'placeholder',
+        url: 'https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Fplaceholder.jpg?alt=media',
+        isPrimary: true
+      }];
 
   return clean({
     id: `T${truck.UntId}`,
@@ -64,11 +73,7 @@ function transformTruckData(truck) {
       truck['Bunk Beds'] === 'Y' && 'Bunk Beds'
     ].filter(Boolean),
     category: [truck['Stock Type'] || 'UNKNOWN'],
-    images: [{
-      id: 'placeholder',
-      url: 'https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Fplaceholder.jpg?alt=media',
-      isPrimary: true
-    }],
+    images: images,
     status: 'active',
     lastUpdated: {
       '.sv': 'timestamp'
@@ -77,7 +82,7 @@ function transformTruckData(truck) {
 }
 
 // Transform trailer data to match Vehicle interface
-function transformTrailerData(trailer) {
+function transformTrailerData(trailer, existingData = {}) {
   // Helper to handle undefined/null values
   const clean = (obj) => {
     Object.keys(obj).forEach(key => {
@@ -89,6 +94,15 @@ function transformTrailerData(trailer) {
     });
     return obj;
   };
+
+  // Keep existing images or use placeholder if none exist
+  const images = existingData.images && existingData.images.length > 0 
+    ? existingData.images 
+    : [{
+        id: 'placeholder',
+        url: 'https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Fplaceholder.jpg?alt=media',
+        isPrimary: true
+      }];
 
   return clean({
     id: `TR${trailer.UntId}`,
@@ -117,7 +131,7 @@ function transformTrailerData(trailer) {
       trailer['Aero Pkg Rear'] === 'Y' && 'Aerodynamic Package'
     ].filter(Boolean),
     category: [trailer['Stock Type'] || 'UNKNOWN'],
-    images: [],
+    images: images,
     status: 'active',
     lastUpdated: {
       '.sv': 'timestamp'
@@ -129,10 +143,20 @@ async function fetchInventory() {
   const sftp = new Client();
   
   try {
-    // Sign in to Firebase
+    // Sign in to Firebase and get current data
     console.log('Signing in to Firebase...');
     await signInWithEmailAndPassword(auth, 'admin@driveformvt.com', '04100B0rd3rTrucks.');
     console.log('Firebase authentication successful');
+
+    // Get current Firebase data
+    console.log('Fetching current Firebase data...');
+    const trucksSnapshot = await get(ref(db, '/vehicles/trucks'));
+    const trailersSnapshot = await get(ref(db, '/vehicles/trailers'));
+    
+    // Get current vehicles as a map of id -> data
+    const currentTrucks = trucksSnapshot.exists() ? trucksSnapshot.val() : {};
+    const currentTrailers = trailersSnapshot.exists() ? trailersSnapshot.val() : {};
+    console.log(`Found ${Object.keys(currentTrucks).length} existing trucks and ${Object.keys(currentTrailers).length} existing trailers`);
 
     console.log('Connecting to SFTP...');
     await sftp.connect({
@@ -162,24 +186,53 @@ async function fetchInventory() {
     console.log(`Found ${trailers.length} trailers`);
 
     // Transform and write data to Firebase
-    console.log('Writing data to Firebase...');
+    console.log('Processing inventory updates...');
     
     // Prepare updates object
     const updates = {};
     
-    // Add trucks
+    // Process trucks
+    const newTruckIds = new Set();
     trucks.forEach(truck => {
-      const transformed = transformTruckData(truck);
-      updates[`vehicles/trucks/T${truck.UntId}`] = transformed;
+      const id = `T${truck.UntId}`;
+      newTruckIds.add(id);
+      const existingTruck = currentTrucks[id] || {};
+      const transformed = transformTruckData(truck, existingTruck);
+      transformed.status = 'active'; // Explicitly mark as active
+      updates[`vehicles/trucks/${id}`] = transformed;
     });
 
-    // Add trailers
+    // Mark missing trucks as inactive
+    Object.keys(currentTrucks).forEach(id => {
+      if (!newTruckIds.has(id)) {
+        console.log(`Marking truck ${id} as inactive`);
+        updates[`vehicles/trucks/${id}/status`] = 'inactive';
+        updates[`vehicles/trucks/${id}/lastUpdated`] = {'.sv': 'timestamp'};
+      }
+    });
+
+    // Process trailers
+    const newTrailerIds = new Set();
     trailers.forEach(trailer => {
-      const transformed = transformTrailerData(trailer);
-      updates[`vehicles/trailers/TR${trailer.UntId}`] = transformed;
+      const id = `TR${trailer.UntId}`;
+      newTrailerIds.add(id);
+      const existingTrailer = currentTrailers[id] || {};
+      const transformed = transformTrailerData(trailer, existingTrailer);
+      transformed.status = 'active';
+      updates[`vehicles/trailers/${id}`] = transformed;
+    });
+
+    // Mark missing trailers as inactive
+    Object.keys(currentTrailers).forEach(id => {
+      if (!newTrailerIds.has(id)) {
+        console.log(`Marking trailer ${id} as inactive`);
+        updates[`vehicles/trailers/${id}/status`] = 'inactive';
+        updates[`vehicles/trailers/${id}/lastUpdated`] = {'.sv': 'timestamp'};
+      }
     });
 
     // Write all updates in a single transaction
+    console.log('Writing updates to Firebase...');
     await update(ref(db), updates);
     
     const stats = {

@@ -20,10 +20,11 @@ interface VehicleListProps {
     category?: string[];
   };
   onClearSearch?: () => void;
+  includeInactive?: boolean;
 }
 
-export function VehicleList({ searchFilters, onClearSearch }: VehicleListProps) {
-  const { vehicles, loading } = useVehicles();
+export function VehicleList({ searchFilters, onClearSearch, includeInactive }: VehicleListProps) {
+  const { vehicles, loading } = useVehicles(includeInactive);
   const [sidebarFilters, setSidebarFilters] = useState<Record<string, string[]>>({});
   const [sortBy, setSortBy] = useState("newest");
 
