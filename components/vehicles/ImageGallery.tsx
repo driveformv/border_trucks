@@ -12,15 +12,10 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/thumbs';
 
-interface Image {
-  id: string;
-  url: string;
-  isPrimary: boolean;
-  caption?: string;
-}
+import { VehicleImage } from '@/types/vehicle';
 
 interface ImageGalleryProps {
-  images: Image[];
+  images: VehicleImage[];
   title: string;
 }
 

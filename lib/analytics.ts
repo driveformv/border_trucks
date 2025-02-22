@@ -16,9 +16,9 @@ export const initGA = () => {
 
     // Initialize dataLayer
     window.dataLayer = window.dataLayer || [];
-    function gtag(...args: any[]) {
+    const gtag = (...args: any[]) => {
       window.dataLayer.push(args);
-    }
+    };
     gtag('js', new Date());
     gtag('config', GA_MEASUREMENT_ID);
   }

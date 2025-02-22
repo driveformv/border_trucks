@@ -30,7 +30,7 @@ export default function FleetriteAlamogordoPage() {
                 <div className="flex items-start gap-3">
                   <MapPin className="h-6 w-6 text-teal-600 mt-1" />
                   <div>
-                    <span className="block">601 S White Sands Blvd</span>
+                    <span className="block">631 Hwy 70 W</span>
                     <span className="block">Alamogordo, NM 88310</span>
                   </div>
                 </div>
@@ -65,7 +65,7 @@ export default function FleetriteAlamogordoPage() {
               height="100%"
               frameBorder="0"
               style={{ border: 0 }}
-              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCalhvCU0Uz3iO_HUPee7F4LCMJ4EZgScI&q=601+S+White+Sands+Blvd,Alamogordo,NM+88310"
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCalhvCU0Uz3iO_HUPee7F4LCMJ4EZgScI&q=631+Hwy+70+W,Alamogordo,NM+88310"
               allowFullScreen
               title="Alamogordo Fleetrite Store Location"
             />

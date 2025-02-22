@@ -6,12 +6,19 @@ import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AuthProvider } from "@/lib/firebase/auth-context";
+import { ClientAnalytics } from "@/components/analytics/ClientAnalytics";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Border International",
   description: "Your trusted partner in commercial transportation solutions.",
+  metadataBase: new URL("https://borderinternational.com"),
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -23,6 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn(inter.className, "min-h-screen flex flex-col")}>
         <AuthProvider>
+          <ClientAnalytics />
           <Navbar />
           <div className="flex-grow">
             {children}

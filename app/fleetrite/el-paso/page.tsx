@@ -30,8 +30,8 @@ export default function FleetriteElPasoPage() {
                 <div className="flex items-start gap-3">
                   <MapPin className="h-6 w-6 text-teal-600 mt-1" />
                   <div>
-                    <span className="block">1201 E San Antonio Ave</span>
-                    <span className="block">El Paso, TX 79901</span>
+                    <span className="block">101 Montoya Rd</span>
+                    <span className="block">El Paso, TX 79932</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -65,7 +65,7 @@ export default function FleetriteElPasoPage() {
               height="100%"
               frameBorder="0"
               style={{ border: 0 }}
-              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCalhvCU0Uz3iO_HUPee7F4LCMJ4EZgScI&q=1201+E+San+Antonio+Ave,El+Paso,TX+79901"
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCalhvCU0Uz3iO_HUPee7F4LCMJ4EZgScI&q=101+Montoya+Rd,El+Paso,TX+79932"
               allowFullScreen
               title="El Paso Fleetrite Store Location"
             />
