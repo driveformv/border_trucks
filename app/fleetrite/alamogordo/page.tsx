@@ -2,22 +2,22 @@ import { Metadata } from "next";
 import { MapPin, Phone, Clock } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Fleetrite® Parts Store Silver City, NM | Border International",
-  description: "Visit our Fleetrite® parts store in Silver City, NM for quality heavy-duty truck parts. Serving International®, IC Bus®, and all major truck brands with expert service and competitive prices.",
+  title: "Fleetrite® Parts Store Alamogordo, NM | Border International",
+  description: "Visit our Fleetrite® parts store in Alamogordo, NM for quality heavy-duty truck parts. Serving International®, IC Bus®, and all major truck brands with expert service and competitive prices.",
 };
 
-export default function FleetriteSilverCityPage() {
+export default function FleetriteAlamogordoPage() {
   return (
     <main className="flex min-h-screen flex-col">
       <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <a href="/fleetrite/silver-city" className="inline-block hover:text-teal-600 transition-colors">
+          <a href="/fleetrite/alamogordo" className="inline-block hover:text-teal-600 transition-colors">
             <h1 className="text-4xl font-bold mb-4">
-              Fleetrite® Parts Store - Silver City, NM
+              Fleetrite® Parts Store - Alamogordo, NM
             </h1>
           </a>
           <p className="text-lg text-gray-700 mb-8">
-            Your trusted source for quality heavy-duty truck parts in Silver City
+            Your trusted source for quality heavy-duty truck parts in Alamogordo
           </p>
         </div>
 
@@ -30,14 +30,14 @@ export default function FleetriteSilverCityPage() {
                 <div className="flex items-start gap-3">
                   <MapPin className="h-6 w-6 text-teal-600 mt-1" />
                   <div>
-                    <span className="block">2110 E US Highway 180</span>
-                    <span className="block">Silver City, NM 88061</span>
+                    <span className="block">601 S White Sands Blvd</span>
+                    <span className="block">Alamogordo, NM 88310</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="h-6 w-6 text-teal-600" />
-                  <a href="tel:+15752094813" className="hover:text-teal-600">
-                    (575) 209-4813
+                  <a href="tel:+15754375800" className="hover:text-teal-600">
+                    (575) 437-5800
                   </a>
                 </div>
               </address>
@@ -65,9 +65,9 @@ export default function FleetriteSilverCityPage() {
               height="100%"
               frameBorder="0"
               style={{ border: 0 }}
-              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCalhvCU0Uz3iO_HUPee7F4LCMJ4EZgScI&q=2110+E+US+Highway+180,Silver+City,NM+88061"
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCalhvCU0Uz3iO_HUPee7F4LCMJ4EZgScI&q=601+S+White+Sands+Blvd,Alamogordo,NM+88310"
               allowFullScreen
-              title="Silver City Fleetrite Store Location"
+              title="Alamogordo Fleetrite Store Location"
             />
           </div>
         </div>
@@ -76,7 +76,7 @@ export default function FleetriteSilverCityPage() {
         <div className="prose max-w-none">
           <h2 className="text-2xl font-semibold mb-4">Quality Parts for Every Need</h2>
           <p className="text-gray-700 mb-4">
-            At our Silver City Fleetrite® store, we offer an extensive range of high-quality parts 
+            At our Alamogordo Fleetrite® store, we offer an extensive range of high-quality parts 
             designed to fit International® and IC Bus® vehicles, as well as various other OEM makes 
             and models. Our inventory includes parts compatible with:
           </p>
