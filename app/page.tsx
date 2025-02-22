@@ -27,7 +27,7 @@ export default function Home() {
           .filter((truck: any) => truck.images && truck.images.length > 0)
           .map((truck: any) => ({
             ...truck.details,
-            images: truck.images.map((url: string) => ({ url })),
+            images: truck.images || [],
             specs: truck.specs || {},
             features: truck.features || [],
             status: truck.status
@@ -43,7 +43,7 @@ export default function Home() {
           .filter((trailer: any) => trailer.images && trailer.images.length > 0)
           .map((trailer: any) => ({
             ...trailer.details,
-            images: trailer.images.map((url: string) => ({ url })),
+            images: trailer.images || [],
             specs: trailer.specs || {},
             features: trailer.features || [],
             status: trailer.status

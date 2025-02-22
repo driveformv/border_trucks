@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,14 +17,26 @@ interface FilterButtonProps {
 }
 
 export function FilterButton({ label, options, value, onChange }: FilterButtonProps) {
+  const [open, setOpen] = useState(false);
+
+  const handleOptionClick = (option: string) => {
+    // If clicking the same option, deselect it
+    if (option === value) {
+      onChange("");
+    } else {
+      onChange(option);
+    }
+    setOpen(false); // Close popover after selection
+  };
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button 
           variant="outline" 
           className="h-[52px] px-6 text-lg border-2 border-gray-200 hover:bg-gray-50"
         >
-          {label}
+          {value || label}
           <ChevronDown className="ml-2 h-5 w-5 text-[#1C1C1C]" />
         </Button>
       </PopoverTrigger>
@@ -35,7 +48,7 @@ export function FilterButton({ label, options, value, onChange }: FilterButtonPr
               className={`w-full text-left px-4 py-2 rounded hover:bg-gray-100 ${
                 value === option ? 'bg-gray-100' : ''
               }`}
-              onClick={() => onChange(option)}
+              onClick={() => handleOptionClick(option)}
             >
               {option}
             </button>

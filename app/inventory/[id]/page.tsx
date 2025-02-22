@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { VehicleDetailClient } from "@/components/vehicles/VehicleDetailClient";
 import { MapPin, Clock, AlertTriangle } from "lucide-react";
-import type { Vehicle } from "@/types/vehicle";
+import type { Vehicle, VehicleImage } from "@/types/vehicle";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ImageGallery } from "@/components/vehicles/ImageGallery";
@@ -24,7 +24,13 @@ export default function VehicleDetailPage({ params }: { params: { id: string } }
       if (data) {
         const vehicleData = {
           ...data,
-          images: (data.images || []).map((url: string) => ({ url })),
+          images: (data.images || []).map((img: string | VehicleImage, index: number) => 
+            typeof img === 'string' ? {
+              id: `img-${index}`,
+              url: img,
+              isPrimary: index === 0
+            } : img
+          ),
           specs: data.specs || {},
           features: data.features || [],
           status: data.status

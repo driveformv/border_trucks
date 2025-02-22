@@ -35,18 +35,29 @@ export function applyFilters(
         case 'make':
         case 'model':
         case 'type':
-          if (Array.isArray(values) && !values.includes(vehicle[key])) {
-            return false;
+          if (Array.isArray(values)) {
+            const vehicleValue = String(vehicle[key]).toLowerCase();
+            const filterValues = values.map(v => String(v).toLowerCase());
+            if (!filterValues.includes(vehicleValue)) {
+              return false;
+            }
           }
           break;
 
         case 'year':
-          const yearRange = values as { min?: number; max?: number };
-          if (
-            (yearRange.min && vehicle.year < yearRange.min) ||
-            (yearRange.max && vehicle.year > yearRange.max)
-          ) {
-            return false;
+          if (Array.isArray(values)) {
+            const yearValues = values.map(v => parseInt(v));
+            if (!yearValues.includes(vehicle.year)) {
+              return false;
+            }
+          } else if (values) {
+            const yearRange = values as { min?: number; max?: number };
+            if (
+              (yearRange.min && vehicle.year < yearRange.min) ||
+              (yearRange.max && vehicle.year > yearRange.max)
+            ) {
+              return false;
+            }
           }
           break;
 
@@ -61,8 +72,12 @@ export function applyFilters(
           break;
 
         case 'category':
-          if (Array.isArray(values) && !values.some(cat => vehicle.category.includes(cat))) {
-            return false;
+          if (Array.isArray(values) && values.length > 0) {
+            const lowerCaseCategories = vehicle.category.map(cat => cat.toLowerCase());
+            const lowerCaseFilterValues = values.map(val => val.toLowerCase());
+            if (!lowerCaseFilterValues.some(val => lowerCaseCategories.includes(val))) {
+              return false;
+            }
           }
           break;
       }

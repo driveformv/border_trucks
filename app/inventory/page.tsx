@@ -6,10 +6,19 @@ import { VehicleList } from "@/components/vehicles/VehicleList";
 
 interface SearchFilters {
   searchTerm?: string;
+  make?: string[];
+  condition?: string[];
+  year?: string[];
+  type?: string[];
+  category?: string[];
 }
 
 export default function InventoryPage() {
   const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
+
+  const handleSearch = (filters: SearchFilters) => {
+    setSearchFilters(filters);
+  };
 
   const handleClearSearch = () => {
     setSearchFilters({});
@@ -31,7 +40,7 @@ export default function InventoryPage() {
       {/* Search Section */}
       <div className="container mx-auto px-4 -mt-8">
         <SearchSection 
-          onSearch={setSearchFilters} 
+          onSearch={handleSearch}
           onClear={handleClearSearch}
           searchFilters={searchFilters}
         />
