@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useVehicles } from "@/lib/hooks/useVehicles";
+import type { FilterSection } from "@/types/filters";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,10 +24,10 @@ interface SearchSectionProps {
   onSearch: (filters: SearchFilters) => void;
   onClear?: () => void;
   searchFilters: SearchFilters;
+  filterSections: FilterSection[];
 }
 
-export function SearchSection({ onSearch, onClear, searchFilters }: SearchSectionProps) {
-  const { filterSections } = useVehicles();
+export function SearchSection({ onSearch, onClear, searchFilters, filterSections }: SearchSectionProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState<Record<string, string[]>>({});
 
