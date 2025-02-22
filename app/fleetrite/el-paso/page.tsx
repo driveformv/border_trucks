@@ -3,33 +3,35 @@ import { MapPin, Phone, Clock } from "lucide-react";
 import { GoogleMap } from "@/components/ui/GoogleMap";
 
 export const metadata: Metadata = {
-  title: "Fleetrite® Parts Store El Paso | Border International",
-  description: "Visit our Fleetrite® parts store in El Paso for quality truck parts and exceptional service. Located at 101 Montoya Rd, El Paso, TX 79932.",
+  title: "Fleetrite Truck Parts El Paso | Border International",
+  description: "Visit our Fleetrite truck parts store in El Paso for quality truck parts and exceptional service. Located at 101 Montoya Rd, El Paso, TX 79932.",
 };
 
 export default function FleetriteElPaso() {
   return (
     <main className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-6">Fleetrite® Parts Store El Paso</h1>
+        <h1 className="text-4xl font-bold mb-6">Fleetrite Truck Parts El Paso</h1>
         
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h2 className="text-2xl font-semibold mb-4">Location</h2>
+        <div className="bg-[#1C1C1C] text-white p-8 rounded-t-xl">
+          <h2 className="text-2xl font-bold">Location & Hours</h2>
+        </div>
+        <div className="bg-white rounded-b-xl shadow-lg">
+          <div className="p-8 grid md:grid-cols-2 gap-8">
+            <div className="space-y-6">
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <MapPin className="h-6 w-6 text-blue-600 mt-1" />
                   <div>
-                    <p className="font-medium">101 Montoya Rd</p>
-                    <p>El Paso, TX 79932</p>
+                    <p className="font-medium text-lg">101 Montoya Rd</p>
+                    <p className="text-gray-600">El Paso, TX 79932</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="h-6 w-6 text-blue-600" />
                   <a 
                     href="tel:+19154445893" 
-                    className="hover:text-blue-600 transition-colors"
+                    className="font-medium text-lg hover:text-blue-600 transition-colors"
                   >
                     (915) 444-5893
                   </a>
@@ -37,14 +39,15 @@ export default function FleetriteElPaso() {
               </div>
             </div>
             
-            <div>
-              <h2 className="text-2xl font-semibold mb-4">Hours</h2>
-              <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                  <Clock className="h-6 w-6 text-blue-600" />
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <Clock className="h-6 w-6 text-blue-600 mt-1" />
                   <div>
-                    <p>Monday - Friday: 8am - 5pm MST</p>
-                    <p>Saturday: 8am - 12pm MST</p>
+                    <p className="font-medium text-lg">Monday - Friday</p>
+                    <p className="text-gray-600">8am - 5pm MST</p>
+                    <p className="font-medium text-lg mt-4">Saturday</p>
+                    <p className="text-gray-600">8am - 12pm MST</p>
                   </div>
                 </div>
               </div>
@@ -53,31 +56,31 @@ export default function FleetriteElPaso() {
         </div>
 
         {/* Google Map */}
-        <div className="mb-8 rounded-lg overflow-hidden shadow-lg">
+        <div className="my-12 rounded-xl overflow-hidden shadow-lg">
           <GoogleMap address="101 Montoya Rd, El Paso, TX 79932" />
         </div>
 
-        <div className="prose max-w-none">
-          <h2>About Our El Paso Fleetrite® Store</h2>
+        <div className="prose max-w-3xl mx-auto">
+          <h2>About Our El Paso Fleetrite Store</h2>
           <p>
-            Our El Paso Fleetrite® parts store offers a comprehensive selection of quality truck parts 
-            and accessories. As an authorized Fleetrite® dealer, we provide reliable parts backed by 
+            Our El Paso Fleetrite truck parts store offers a comprehensive selection of quality truck parts 
+            and accessories. As an authorized Fleetrite dealer, we provide reliable parts backed by 
             industry-leading warranties and competitive pricing.
           </p>
           
           <h2>Available Services</h2>
           <ul>
-            <li>Extensive inventory of Fleetrite® parts</li>
+            <li>Extensive inventory of Fleetrite parts</li>
             <li>Expert parts consultation</li>
             <li>Quick order fulfillment</li>
             <li>Competitive pricing</li>
             <li>Warranty support</li>
           </ul>
 
-          <h2>Why Choose Fleetrite®?</h2>
+          <h2>Why Choose Fleetrite?</h2>
           <p>
-            Fleetrite® is International® Truck's private label brand for quality aftermarket truck parts. 
-            With over 100 years of experience, Fleetrite® parts are designed to exact specifications for 
+            Fleetrite is International's private label brand for quality aftermarket truck parts. 
+            With over 100 years of experience, Fleetrite parts are designed to exact specifications for 
             all truck makes and are backed by competitive warranties.
           </p>
         </div>

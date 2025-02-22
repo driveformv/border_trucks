@@ -3,15 +3,15 @@ import { MapPin, Phone, Clock } from "lucide-react";
 import { GoogleMap } from "@/components/ui/GoogleMap";
 
 export const metadata: Metadata = {
-  title: "Fleetrite Truck Parts Alamogordo | Border International",
-  description: "Visit our Fleetrite truck parts store in Alamogordo for quality truck parts and exceptional service. Located at 631 Hwy 70 W, Alamogordo, NM 88310.",
+  title: "Fleetrite Truck Parts El Paso East | Border International",
+  description: "Visit our Fleetrite truck parts store in East El Paso for quality truck parts and exceptional service. Located at 12283 Rojas Dr, El Paso, TX 79936.",
 };
 
-export default function FleetriteAlamogordo() {
+export default function FleetriteElPasoEast() {
   return (
     <main className="container mx-auto px-4 py-12">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-6">Fleetrite Truck Parts Alamogordo</h1>
+        <h1 className="text-4xl font-bold mb-6">Fleetrite Truck Parts El Paso East</h1>
         
         <div className="bg-[#1C1C1C] text-white p-8 rounded-t-xl">
           <h2 className="text-2xl font-bold">Location & Hours</h2>
@@ -23,17 +23,17 @@ export default function FleetriteAlamogordo() {
                 <div className="flex items-start gap-3">
                   <MapPin className="h-6 w-6 text-blue-600 mt-1" />
                   <div>
-                    <p className="font-medium text-lg">631 Hwy 70 W</p>
-                    <p className="text-gray-600">Alamogordo, NM 88310</p>
+                    <p className="font-medium text-lg">12283 Rojas Dr</p>
+                    <p className="text-gray-600">El Paso, TX 79936</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="h-6 w-6 text-blue-600" />
                   <a 
-                    href="tel:+15755023420" 
+                    href="tel:+19159006564" 
                     className="font-medium text-lg hover:text-blue-600 transition-colors"
                   >
-                    (575) 502-3420
+                    (915) 900-6564
                   </a>
                 </div>
               </div>
@@ -57,13 +57,13 @@ export default function FleetriteAlamogordo() {
 
         {/* Google Map */}
         <div className="my-12 rounded-xl overflow-hidden shadow-lg">
-          <GoogleMap address="631 Hwy 70 W, Alamogordo, NM 88310" />
+          <GoogleMap address="12283 Rojas Dr, El Paso, TX 79936" />
         </div>
 
         <div className="prose max-w-3xl mx-auto">
-          <h2>About Our Alamogordo Fleetrite Store</h2>
+          <h2>About Our El Paso East Fleetrite Store</h2>
           <p>
-            Our Alamogordo Fleetrite truck parts store offers a comprehensive selection of quality truck parts 
+            Our East El Paso Fleetrite truck parts store offers a comprehensive selection of quality truck parts 
             and accessories. As an authorized Fleetrite dealer, we provide reliable parts backed by 
             industry-leading warranties and competitive pricing.
           </p>

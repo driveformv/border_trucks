@@ -22,8 +22,7 @@ export function Footer() {
             <h3 className="text-lg font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li><Link href="/inventory" className="text-gray-400 hover:text-white">Inventory</Link></li>
-              <li><Link href="/fleetrite" className="text-gray-400 hover:text-white">Fleetrite®</Link></li>
-              <li><Link href="/parts" className="text-gray-400 hover:text-white">Parts</Link></li>
+              <li><Link href="/fleetrite" className="text-gray-400 hover:text-white">Fleetrite Parts</Link></li>
               <li><Link href="/services" className="text-gray-400 hover:text-white">Services</Link></li>
               <li><Link href="/financing" className="text-gray-400 hover:text-white">Financing</Link></li>
             </ul>
@@ -92,11 +91,11 @@ export function Footer() {
           </div>
 
           {/* Parts Stores */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
             <div>
               <h4 className="font-bold mb-2">
                 <Link href="/fleetrite/silver-city" className="hover:text-white">
-                  Fleetrite® Silver City
+                  Fleetrite Silver City
                 </Link>
               </h4>
               <address className="text-gray-400 not-italic">
@@ -117,7 +116,7 @@ export function Footer() {
             <div>
               <h4 className="font-bold mb-2">
                 <Link href="/fleetrite/el-paso" className="hover:text-white">
-                  Fleetrite® El Paso
+                  Fleetrite El Paso
                 </Link>
               </h4>
               <address className="text-gray-400 not-italic">
@@ -138,7 +137,7 @@ export function Footer() {
             <div>
               <h4 className="font-bold mb-2">
                 <Link href="/fleetrite/alamogordo" className="hover:text-white">
-                  Fleetrite® Alamogordo
+                  Fleetrite Alamogordo
                 </Link>
               </h4>
               <address className="text-gray-400 not-italic">
@@ -152,6 +151,48 @@ export function Footer() {
                 <div className="flex items-center gap-2 mt-2">
                   <Phone className="h-4 w-4" />
                   <a href="tel:+15755023420" className="hover:text-white">(575) 502-3420</a>
+                </div>
+              </address>
+            </div>
+
+            <div>
+              <h4 className="font-bold mb-2">
+                <Link href="/fleetrite/las-cruces" className="hover:text-white">
+                  Fleetrite Las Cruces
+                </Link>
+              </h4>
+              <address className="text-gray-400 not-italic">
+                <div className="flex items-start gap-2">
+                  <MapPin className="h-5 w-5 mt-1 flex-shrink-0" />
+                  <div>
+                    2701 W Amador Ave<br />
+                    Las Cruces, NM 88005
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <Phone className="h-4 w-4" />
+                  <a href="tel:+15755414259" className="hover:text-white">(575) 541-4259</a>
+                </div>
+              </address>
+            </div>
+
+            <div>
+              <h4 className="font-bold mb-2">
+                <Link href="/fleetrite/el-paso-east" className="hover:text-white">
+                  Fleetrite El Paso East
+                </Link>
+              </h4>
+              <address className="text-gray-400 not-italic">
+                <div className="flex items-start gap-2">
+                  <MapPin className="h-5 w-5 mt-1 flex-shrink-0" />
+                  <div>
+                    12283 Rojas Dr<br />
+                    El Paso, TX 79936
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <Phone className="h-4 w-4" />
+                  <a href="tel:+19159006564" className="hover:text-white">(915) 900-6564</a>
                 </div>
               </address>
             </div>
