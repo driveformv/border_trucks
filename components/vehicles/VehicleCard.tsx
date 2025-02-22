@@ -98,45 +98,41 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
         )}
       </div>
 
-      <div className="p-6">
-        <h2 className="text-4xl font-bold mb-2">
+      <div className="p-4 sm:p-6">
+        <h2 className="text-2xl font-bold mb-1 text-gray-900 leading-tight">
           {vehicle.year} {vehicle.make} {vehicle.model}
         </h2>
         
-        <p className="text-2xl text-gray-600 mb-8">Stock #{vehicle.stockNumber}</p>
-
-        <div className="grid grid-cols-2 gap-x-16 gap-y-6 mb-8 text-xl">
-          <div className="flex items-center">
-            <span className="text-gray-600 w-32">Stock#:</span>
-            <span className="font-medium">{vehicle.stockNumber}</span>
+        <div className="space-y-4 mb-6">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">Stock#:</span>
+            <span className="font-medium text-gray-900">{vehicle.stockNumber}</span>
           </div>
-          <div className="flex items-center">
-            <span className="text-gray-600 w-32">Mileage:</span>
-            <span className="font-medium">{vehicle.mileage}</span>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">Mileage:</span>
+            <span className="font-medium text-gray-900">{vehicle.mileage}</span>
           </div>
-          <div className="flex items-center">
-            <span className="text-gray-600 w-32">Engine:</span>
-            <span className="font-medium">{vehicle.engineMake} {vehicle.engineModel}</span>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">Engine:</span>
+            <span className="font-medium text-gray-900">{vehicle.engineMake} {vehicle.engineModel}</span>
           </div>
-          <div className="flex items-center">
-            <span className="text-gray-600 w-32">Transmission:</span>
-            <span className="font-medium">{vehicle.transmission}</span>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600">Transmission:</span>
+            <span className="font-medium text-gray-900">{vehicle.transmission}</span>
           </div>
         </div>
 
-        <div className="flex gap-6">
+        <div className="flex gap-3 mt-auto">
           <Button
             asChild
-            className="flex-1 bg-[#1C1C1C] hover:bg-[#2C2C2C]"
-            size="sm"
+            className="flex-1 bg-[#1C1C1C] hover:bg-[#2C2C2C] font-medium text-sm py-2"
           >
             <Link href={`/inventory/${vehicle.id}`}>View Details</Link>
           </Button>
           <Button
             onClick={handleRequestInfo}
             variant="outline"
-            className="flex-1"
-            size="sm"
+            className="flex-1 border-2 font-medium text-sm py-2 hover:bg-gray-50"
           >
             Request Info
           </Button>
