@@ -17,7 +17,7 @@ export interface Vehicle {
   stockNumber: string;
   vin: string;
   description: string;
-  images: VehicleImage[];
+  images: (VehicleImage | string)[];
   
   // Truck-specific fields
   engineMake?: string;

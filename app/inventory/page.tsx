@@ -1,68 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { SearchSection } from "@/components/vehicles/search/SearchSection";
 import { VehicleList } from "@/components/vehicles/VehicleList";
-import { db } from "@/lib/firebase/config";
-import { ref, onValue } from "firebase/database";
-import type { Vehicle } from "@/types/vehicle";
+
+interface SearchFilters {
+  searchTerm?: string;
+}
 
 export default function InventoryPage() {
-  const [searchFilters, setSearchFilters] = useState({});
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Get trucks and trailers
-    const trucksRef = ref(db, 'vehicles/trucks');
-    const trailersRef = ref(db, 'vehicles/trailers');
-
-    const unsubscribeTrucks = onValue(trucksRef, (snapshot) => {
-      const trucksData = snapshot.val();
-      if (trucksData) {
-        const trucksArray = Object.values(trucksData).map((truck: any) => ({
-          ...truck.details,
-          images: (truck.images || []).map((url: string) => ({ url })),
-          specs: truck.specs || {},
-          features: truck.features || [],
-          status: truck.status
-        }));
-        setVehicles(prev => [...prev.filter(v => v.type !== 'truck'), ...trucksArray]);
-      }
-    });
-
-    const unsubscribeTrailers = onValue(trailersRef, (snapshot) => {
-      const trailersData = snapshot.val();
-      if (trailersData) {
-        const trailersArray = Object.values(trailersData).map((trailer: any) => ({
-          ...trailer.details,
-          images: (trailer.images || []).map((url: string) => ({ url })),
-          specs: trailer.specs || {},
-          features: trailer.features || [],
-          status: trailer.status
-        }));
-        setVehicles(prev => [...prev.filter(v => v.type !== 'trailer'), ...trailersArray]);
-      }
-      setLoading(false);
-    });
-
-    return () => {
-      unsubscribeTrucks();
-      unsubscribeTrailers();
-    };
-  }, []);
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
 
   const handleClearSearch = () => {
     setSearchFilters({});
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
 
   return (
     <main className="min-h-screen bg-white">
@@ -89,7 +40,6 @@ export default function InventoryPage() {
       {/* Vehicle List */}
       <div className="container mx-auto px-4">
         <VehicleList 
-          initialVehicles={vehicles} 
           searchFilters={searchFilters} 
           onClearSearch={handleClearSearch}
         />

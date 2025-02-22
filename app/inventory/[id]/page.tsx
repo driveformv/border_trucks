@@ -23,7 +23,7 @@ export default function VehicleDetailPage({ params }: { params: { id: string } }
       const data = snapshot.val();
       if (data) {
         const vehicleData = {
-          ...data.details,
+          ...data,
           images: (data.images || []).map((url: string) => ({ url })),
           specs: data.specs || {},
           features: data.features || [],
@@ -60,9 +60,11 @@ export default function VehicleDetailPage({ params }: { params: { id: string } }
   }
 
   // Format the image data for the gallery
-  const galleryImages = (vehicle.images || []).map((img: any) => ({
+  const galleryImages = (vehicle.images || []).map((img: any, index: number) => ({
+    id: typeof img === 'string' ? `img-${index}` : (img.id || `img-${index}`),
     url: typeof img === 'string' ? img : img.url,
-    caption: img.caption || ''
+    caption: img.caption || '',
+    isPrimary: typeof img === 'string' ? index === 0 : (img.isPrimary !== undefined ? img.isPrimary : index === 0)
   }));
 
   return (

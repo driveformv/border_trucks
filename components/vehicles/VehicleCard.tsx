@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Card } from "../ui/card";
+import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import type { Vehicle } from "@/types/vehicle";
+import type { Vehicle } from "../../types/vehicle";
 import { VehicleInquiryModal } from "./VehicleInquiryModal";
 
 interface VehicleCardProps {
@@ -30,7 +30,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
     if (!image) {
       return defaultImage;
     }
-    return typeof image === 'string' ? image : image.url;
+    return typeof image === "string" ? image : image.url;
   };
 
   const nextImage = (e: React.MouseEvent) => {
@@ -45,7 +45,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
     e.preventDefault();
     e.stopPropagation();
     if (vehicle.images && vehicle.images.length > 0) {
-      setCurrentImageIndex((prev) => 
+      setCurrentImageIndex((prev) =>
         prev === 0 ? vehicle.images.length - 1 : prev - 1
       );
     }
@@ -98,42 +98,33 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
         )}
       </div>
 
-      <div className="p-4 md:p-6">
-        <div className="space-y-2 mb-4">
-          <h3 className="text-lg md:text-xl font-semibold">
-            {vehicle.year} {vehicle.make} {vehicle.model}
-          </h3>
-          <p className="text-sm md:text-base text-gray-600">
-            Stock #{vehicle.stockNumber}
-          </p>
-        </div>
+      <div className="p-6">
+        <h2 className="text-4xl font-bold mb-2">
+          {vehicle.year} {vehicle.make} {vehicle.model}
+        </h2>
+        
+        <p className="text-2xl text-gray-600 mb-8">Stock #{vehicle.stockNumber}</p>
 
-        <div className="grid grid-cols-2 gap-2 mb-4 text-sm md:text-base">
-          <div className="flex items-center space-x-1">
-            <span className="text-gray-600">Stock#:</span>
+        <div className="grid grid-cols-2 gap-x-16 gap-y-6 mb-8 text-xl">
+          <div className="flex items-center">
+            <span className="text-gray-600 w-32">Stock#:</span>
             <span className="font-medium">{vehicle.stockNumber}</span>
           </div>
-          {vehicle.mileage && (
-            <div className="flex items-center space-x-1">
-              <span className="text-gray-600">Mileage:</span>
-              <span className="font-medium">{vehicle.mileage.toLocaleString()}</span>
-            </div>
-          )}
-          {vehicle.engineMake && (
-            <div className="flex items-center space-x-1">
-              <span className="text-gray-600">Engine:</span>
-              <span className="font-medium">{vehicle.engineMake} {vehicle.engineModel}</span>
-            </div>
-          )}
-          {vehicle.transmission && (
-            <div className="flex items-center space-x-1">
-              <span className="text-gray-600">Transmission:</span>
-              <span className="font-medium">{vehicle.transmission}</span>
-            </div>
-          )}
+          <div className="flex items-center">
+            <span className="text-gray-600 w-32">Mileage:</span>
+            <span className="font-medium">{vehicle.mileage}</span>
+          </div>
+          <div className="flex items-center">
+            <span className="text-gray-600 w-32">Engine:</span>
+            <span className="font-medium">{vehicle.engineMake} {vehicle.engineModel}</span>
+          </div>
+          <div className="flex items-center">
+            <span className="text-gray-600 w-32">Transmission:</span>
+            <span className="font-medium">{vehicle.transmission}</span>
+          </div>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-2 md:gap-4">
+        <div className="flex gap-6">
           <Button
             asChild
             className="flex-1 bg-[#1C1C1C] hover:bg-[#2C2C2C]"

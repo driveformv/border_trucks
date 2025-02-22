@@ -18,6 +18,7 @@ export function SearchSection({ onSearch, onClear, searchFilters }: SearchSectio
     make: "",
     year: "",
     priceRange: "",
+    condition: [] as string[]
   });
 
   const handleSearch = () => {
@@ -25,7 +26,7 @@ export function SearchSection({ onSearch, onClear, searchFilters }: SearchSectio
       searchTerm,
       ...filters,
       type: filters.make ? "truck" : undefined,
-      condition: filters.condition
+      condition: filters.condition.length > 0 ? [filters.condition] : undefined
     });
   };
 
@@ -41,6 +42,7 @@ export function SearchSection({ onSearch, onClear, searchFilters }: SearchSectio
       make: "",
       year: "",
       priceRange: "",
+      condition: [] as string[]
     });
     if (onClear) {
       onClear();
@@ -55,6 +57,7 @@ export function SearchSection({ onSearch, onClear, searchFilters }: SearchSectio
         make: "",
         year: "",
         priceRange: "",
+        condition: [] as string[]
       });
     }
   }, [searchFilters]);
@@ -111,6 +114,12 @@ export function SearchSection({ onSearch, onClear, searchFilters }: SearchSectio
             ]}
             value={filters.priceRange}
             onChange={(value) => setFilters({ ...filters, priceRange: value })}
+          />
+          <FilterButton
+            label="Condition"
+            options={["New", "Used"]}
+            value={filters.condition[0] || ""}
+            onChange={(value) => setFilters({ ...filters, condition: value ? [value] : [] })}
           />
         </div>
       </div>

@@ -7,35 +7,40 @@ import { SidebarFilters } from "./filters/SidebarFilters";
 import { applyFilters, sortVehicles } from "@/lib/utils/filterUtils";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import type { Vehicle } from "@/types/vehicle";
+import { useVehicles } from "@/lib/hooks/useVehicles";
 import type { VehicleFilters } from "@/types/filters";
 
 interface VehicleListProps {
-  initialVehicles: Vehicle[];
-  searchFilters: any;
+  searchFilters: {
+    searchTerm?: string;
+  };
   onClearSearch?: () => void;
 }
 
-export function VehicleList({ initialVehicles, searchFilters, onClearSearch }: VehicleListProps) {
-  const [filters, setFilters] = useState<VehicleFilters>({});
+export function VehicleList({ searchFilters, onClearSearch }: VehicleListProps) {
+  const { vehicles, loading } = useVehicles();
+  const [filters, setFilters] = useState<Record<string, string[]>>({});
   const [sortBy, setSortBy] = useState("newest");
 
   const filteredVehicles = useMemo(() => {
-    const filtered = applyFilters(initialVehicles, filters, searchFilters.searchTerm || "");
+    const filtered = applyFilters(vehicles, filters, searchFilters.searchTerm || "");
     return sortVehicles(filtered, sortBy);
-  }, [initialVehicles, filters, searchFilters, sortBy]);
+  }, [vehicles, filters, searchFilters.searchTerm, sortBy]);
 
   const handleFilterChange = (category: string, value: string) => {
     setFilters(prev => {
       const categoryFilters = prev[category] || [];
       const updated = categoryFilters.includes(value)
-        ? categoryFilters.filter(v => v !== value)
+        ? categoryFilters.filter((v: string) => v !== value)
         : [...categoryFilters, value];
       
-      return {
+      // Convert to VehicleFilters format for applyFilters
+      const newFilters: Record<string, string[]> = {
         ...prev,
         [category]: updated
       };
+      
+      return newFilters;
     });
   };
 
@@ -50,6 +55,10 @@ export function VehicleList({ initialVehicles, searchFilters, onClearSearch }: V
   const hasActiveFilters = Object.values(filters).some(value => 
     Array.isArray(value) ? value.length > 0 : !!value
   ) || !!searchFilters.searchTerm;
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>

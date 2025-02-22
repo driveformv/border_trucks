@@ -1,63 +1,166 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { Vehicle } from '@/types/vehicle';
-import { sampleVehicles } from '@/data/sampleVehicles';
+import type { VehicleFilters, FilterSection } from '@/types/filters';
+import { db } from '@/lib/firebase';
+import { ref, onValue, off } from 'firebase/database';
+import { applyFilters } from '@/lib/utils/filterUtils';
 
-export function useVehicles(filters?: { 
-  condition?: string; 
-  make?: string; 
-  class?: string;
-  searchTerm?: string;
-}) {
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+export function useVehicles() {
+  const [allVehicles, setAllVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
 
-  // Load static data
+  // Helper function to normalize vehicle data
+  const normalizeVehicleData = (data: any): Vehicle => {
+    // If data has details object, merge it with root
+    if (data.details) {
+      return {
+        ...data.details,
+        specs: data.specs || {},
+        features: data.features || [],
+        category: data.category || [],
+        images: data.images || [],
+        status: data.status || 'Available',
+        lastUpdated: data.lastUpdated
+      };
+    }
+    // Data is already flat
+    return {
+      ...data,
+      specs: data.specs || {},
+      features: data.features || [],
+      category: data.category || [],
+      images: data.images || [],
+      status: data.status || 'Available'
+    };
+  };
+
+  // Fetch all vehicles once
   useEffect(() => {
-    try {
-      let filtered = [...sampleVehicles];
-      
-      if (filters) {
-        if (filters.condition) {
-          filtered = filtered.filter(v => v.condition === filters.condition);
-        }
-        if (filters.make) {
-          filtered = filtered.filter(v => v.make === filters.make);
-        }
-        if (filters.class) {
-          filtered = filtered.filter(v => v.class === filters.class);
-        }
-      }
+    setLoading(true);
+    console.log('Setting up realtime listeners...');
+    
+    const trucksRef = ref(db, '/vehicles/trucks');
+    const trailersRef = ref(db, '/vehicles/trailers');
 
-      setVehicles(filtered);
-      setLoading(false);
-    } catch (err) {
+    // Set up realtime listeners
+    onValue(trucksRef, (snapshot) => {
+      const trucksData = snapshot.exists() ? 
+        Object.entries(snapshot.val()).map(([id, data]) => normalizeVehicleData({
+          id,
+          type: 'truck',
+          ...(data as any)
+        })) : [];
+
+      onValue(trailersRef, (snapshot) => {
+        const trailersData = snapshot.exists() ? 
+          Object.entries(snapshot.val()).map(([id, data]) => normalizeVehicleData({
+            id,
+            type: 'trailer',
+            ...(data as any)
+          })) : [];
+
+        const vehicleData = [...trucksData, ...trailersData];
+        console.log('Realtime update received:', vehicleData);
+        setAllVehicles(vehicleData);
+        setLoading(false);
+      }, (error) => {
+        console.error('Error fetching trailers:', error);
+        setError('Failed to load vehicles');
+        setLoading(false);
+      });
+    }, (error) => {
+      console.error('Error fetching trucks:', error);
       setError('Failed to load vehicles');
       setLoading(false);
-    }
-  }, [filters?.condition, filters?.make, filters?.class]);
-
-  // Handle search filtering
-  useEffect(() => {
-    if (!filters?.searchTerm) {
-      setFilteredVehicles(vehicles);
-      return;
-    }
-
-    const searchTermLower = filters.searchTerm.toLowerCase();
-    const filtered = vehicles.filter((vehicle) => {
-      return (
-        vehicle.make.toLowerCase().includes(searchTermLower) ||
-        vehicle.model.toLowerCase().includes(searchTermLower) ||
-        vehicle.engineMake.toLowerCase().includes(searchTermLower) ||
-        vehicle.engineModel.toLowerCase().includes(searchTermLower) ||
-        vehicle.stockNumber.toLowerCase().includes(searchTermLower) ||
-        vehicle.chassisNumber.toLowerCase().includes(searchTermLower)
-      );
     });
-    setFilteredVehicles(filtered);
-  }, [vehicles, filters?.searchTerm]);
 
-  return { vehicles: filteredVehicles, loading, error };
+    // Cleanup listeners on unmount
+    return () => {
+      off(trucksRef);
+      off(trailersRef);
+    };
+  }, []); // Only fetch once on mount
+
+  // Generate filter options from actual data
+  const filterSections = useMemo(() => {
+    if (!allVehicles.length) return [];
+
+    const counts: {
+      condition: Record<string, number>;
+      make: Record<string, number>;
+      type: Record<string, number>;
+      category: Record<string, number>;
+    } = {
+      condition: {},
+      make: {},
+      type: {},
+      category: {}
+    };
+
+    // Count occurrences of each value
+    allVehicles.forEach(vehicle => {
+      counts.condition[vehicle.condition] = (counts.condition[vehicle.condition] || 0) + 1;
+      counts.make[vehicle.make] = (counts.make[vehicle.make] || 0) + 1;
+      counts.type[vehicle.type] = (counts.type[vehicle.type] || 0) + 1;
+      if (vehicle.category) {
+        vehicle.category.forEach(cat => {
+          counts.category[cat] = (counts.category[cat] || 0) + 1;
+        });
+      }
+    });
+
+    // Convert to filter sections format
+    const sections: FilterSection[] = [
+      {
+        id: 'condition',
+        title: 'Condition',
+        type: 'checkbox',
+        options: Object.entries(counts.condition).map(([value, count]) => ({
+          label: value,
+          value: value.toLowerCase(),
+          count: count as number
+        }))
+      },
+      {
+        id: 'make',
+        title: 'Make',
+        type: 'checkbox',
+        options: Object.entries(counts.make).map(([value, count]) => ({
+          label: value,
+          value: value.toLowerCase(),
+          count: count as number
+        }))
+      },
+      {
+        id: 'type',
+        title: 'Type',
+        type: 'checkbox',
+        options: Object.entries(counts.type).map(([value, count]) => ({
+          label: value,
+          value: value.toLowerCase(),
+          count: count as number
+        }))
+      },
+      {
+        id: 'category',
+        title: 'Category',
+        type: 'checkbox',
+        options: Object.entries(counts.category).map(([value, count]) => ({
+          label: value,
+          value: value.toLowerCase(),
+          count: count as number
+        }))
+      }
+    ];
+
+    return sections.filter(section => section.options.length > 0);
+  }, [allVehicles]);
+
+  return { 
+    vehicles: allVehicles,
+    loading, 
+    error,
+    filterSections
+  };
 }

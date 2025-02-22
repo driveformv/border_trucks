@@ -45,6 +45,7 @@
     "react-dom": "18.2.0",
     "react-dropzone": "^14.3.5",
     "react-hook-form": "^7.54.1",
+    "sharp": "^0.33.5",
     "sonner": "^1.7.1",
     "ssh2-sftp-client": "^11.0.0",
     "swiper": "^11.1.15",
@@ -56,6 +57,7 @@
   },
   "devDependencies": {
     "@shadcn/ui": "^0.0.4",
-    "serve": "^14.2.4"
+    "serve": "^14.2.4",
+    "ts-node": "^10.9.2"
   }
 }
