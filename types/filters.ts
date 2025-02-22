@@ -16,11 +16,13 @@ export interface VehicleFilters {
   class?: string[];
   make?: string[];
   model?: string[];
-  year?: { min?: number; max?: number };
+  year?: string[] | { min?: number; max?: number };
   price?: { min?: number; max?: number };
   mileage?: { min?: number; max?: number };
   engineMake?: string[];
   transmission?: string[];
   sleeper?: string[];
   wheelbase?: string[];
+  type?: string[];
+  category?: string[];
 }

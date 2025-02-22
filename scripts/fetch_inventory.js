@@ -11,7 +11,7 @@ const firebaseConfig = {
   projectId: "bordertrucks-d8624",
   storageBucket: "bordertrucks-d8624.firebasestorage.app",
   messagingSenderId: "1046286132964",
-  appId: "1:1046286132964:web:7ccbe2cdbb041df90deef1"
+  appId: "1:1046286132964:web:b8951fa9f7d392ba0deef1"
 };
 
 // Initialize Firebase
@@ -34,31 +34,23 @@ function transformTruckData(truck) {
   };
 
   return clean({
-    details: {
-      id: `T${truck.UntId}`,
-      type: 'truck',
-      condition: truck['Stock Type']?.startsWith('NEW') ? 'New' : 'Used',
-      stockType: truck['Stock Type'] || '',
-      make: truck.Make || '',
-      model: truck.Model || '',
-      year: parseInt(truck.Year) || 0,
-      price: parseInt(truck.Price) || 0,
-      mileage: parseInt(truck.Mileage) || 0,
-      stockNumber: truck.UntId || '',
-      vin: truck.VIN || '',
-      description: `${truck.Year || ''} ${truck.Make || ''} ${truck.Model || ''} - ${truck.Engine || ''} ${truck['Engine Make'] || ''}`.trim(),
-      engineMake: truck['Engine Make'] || '',
-      engineModel: truck.Engine || '',
-      horsepower: parseInt(truck.Horsepower) || 0,
-      transmission: truck['Transmission Type'] || '',
-      transmissionType: truck['Transmission Type']?.toLowerCase().includes('auto') ? 'Automatic' : 'Manual',
-      location: 'Border International',
-      apu: truck.APU === 'Y',
-      pto: truck.PTO === 'Y',
-      collisionMitigation: truck['Collision Mitigation'] === 'Y',
-      bunkBeds: truck['Bunk Beds'] === 'Y',
-      rawCsvData: { ...truck }
-    },
+    id: `T${truck.UntId}`,
+    type: 'truck',
+    condition: truck['Stock Type']?.startsWith('NEW') ? 'New' : 'Used',
+    make: truck.Make || '',
+    model: truck.Model || '',
+    year: parseInt(truck.Year) || 0,
+    price: parseInt(truck.Price) || 0,
+    mileage: parseInt(truck.Mileage) || 0,
+    stockNumber: truck.UntId || '',
+    vin: truck.VIN || '',
+    description: `${truck.Year || ''} ${truck.Make || ''} ${truck.Model || ''} - ${truck.Engine || ''} ${truck['Engine Make'] || ''}`.trim(),
+    engineMake: truck['Engine Make'] || '',
+    engineModel: truck.Engine || '',
+    horsepower: parseInt(truck.Horsepower) || 0,
+    transmission: truck['Transmission Type'] || '',
+    transmissionType: truck['Transmission Type']?.toLowerCase().includes('auto') ? 'Automatic' : 'Manual',
+    location: 'Border International',
     specs: {
       suspension: truck['Suspension Type'] || 'N/A',
       driveTrain: truck['Drive Train'] || 'N/A',
@@ -72,7 +64,11 @@ function transformTruckData(truck) {
       truck['Bunk Beds'] === 'Y' && 'Bunk Beds'
     ].filter(Boolean),
     category: [truck['Stock Type'] || 'UNKNOWN'],
-    images: [],
+    images: [{
+      id: 'placeholder',
+      url: 'https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Fplaceholder.jpg?alt=media',
+      isPrimary: true
+    }],
     status: 'active',
     lastUpdated: {
       '.sv': 'timestamp'
@@ -95,26 +91,18 @@ function transformTrailerData(trailer) {
   };
 
   return clean({
-    details: {
-      id: `TR${trailer.UntId}`,
-      type: 'trailer',
-      condition: trailer['Stock Type']?.startsWith('NEW') ? 'New' : 'Used',
-      stockType: trailer['Stock Type'] || '',
-      make: trailer.Make || '',
-      model: trailer.Model || '',
-      year: parseInt(trailer.Year) || 0,
-      price: parseInt(trailer.Price) || 0,
-      stockNumber: trailer.UntId || '',
-      vin: trailer.VIN || '',
-      description: `${trailer.Year || ''} ${trailer.Make || ''} ${trailer.Model || ''}`.trim(),
-      trailerType: trailer['Body Type'] || '',
-      location: 'Border International',
-      skirts: trailer.Skirts === 'Y',
-      airPressurePkg: trailer['Air Pressure Pkg'] === 'Y',
-      refer: trailer.Refer === 'Y',
-      aeroPkgRear: trailer['Aero Pkg Rear'] === 'Y',
-      rawCsvData: { ...trailer }
-    },
+    id: `TR${trailer.UntId}`,
+    type: 'trailer',
+    condition: trailer['Stock Type']?.startsWith('NEW') ? 'New' : 'Used',
+    make: trailer.Make || '',
+    model: trailer.Model || '',
+    year: parseInt(trailer.Year) || 0,
+    price: parseInt(trailer.Price) || 0,
+    stockNumber: trailer.UntId || '',
+    vin: trailer.VIN || '',
+    description: `${trailer.Year || ''} ${trailer.Make || ''} ${trailer.Model || ''}`.trim(),
+    trailerType: trailer['Body Type'] || '',
+    location: 'Border International',
     specs: {
       bodyType: trailer['Body Type'] || 'N/A',
       gvwr: trailer.GVWR || 'N/A',

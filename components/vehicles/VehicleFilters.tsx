@@ -4,11 +4,11 @@ import { Label } from "@/components/ui/label";
 
 interface FiltersProps {
   filters: {
-    condition?: string;
-    make?: string;
-    class?: string;
+    condition?: string[];
+    make?: string[];
+    class?: string[];
   };
-  onFilterChange: (filters: any) => void;
+  onFilterChange: (category: string, value: string) => void;
 }
 
 export function VehicleFilters({ filters, onFilterChange }: FiltersProps) {
@@ -21,16 +21,16 @@ export function VehicleFilters({ filters, onFilterChange }: FiltersProps) {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="new"
-                checked={filters.condition === 'New'}
-                onCheckedChange={() => onFilterChange({ ...filters, condition: 'New' })}
+                checked={filters.condition?.includes('New')}
+                onCheckedChange={() => onFilterChange('condition', 'New')}
               />
               <Label htmlFor="new">New</Label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="used"
-                checked={filters.condition === 'Used'}
-                onCheckedChange={() => onFilterChange({ ...filters, condition: 'Used' })}
+                checked={filters.condition?.includes('Used')}
+                onCheckedChange={() => onFilterChange('condition', 'Used')}
               />
               <Label htmlFor="used">Used</Label>
             </div>
@@ -44,8 +44,8 @@ export function VehicleFilters({ filters, onFilterChange }: FiltersProps) {
               <div key={make} className="flex items-center space-x-2">
                 <Checkbox
                   id={make}
-                  checked={filters.make === make}
-                  onCheckedChange={() => onFilterChange({ ...filters, make })}
+                  checked={filters.make?.includes(make)}
+                  onCheckedChange={() => onFilterChange('make', make)}
                 />
                 <Label htmlFor={make}>{make}</Label>
               </div>

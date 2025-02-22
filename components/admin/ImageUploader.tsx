@@ -26,28 +26,29 @@ import LoadingSpinner from '../ui/LoadingSpinner';
 import { useEffect } from 'react';
 import { useAuth } from '@/lib/firebase/auth-context';
 import { Camera, Trash2, X } from 'lucide-react';
+import type { VehicleImage } from '@/types/vehicle';
 
 interface ImageUploaderProps {
   vehicleId: string;
   vehicleType: 'trucks' | 'trailers';
-  existingImages: string[];
-  onImagesUpdate?: (urls: string[]) => void;
+  existingImages: VehicleImage[];
+  onImagesUpdate?: (images: VehicleImage[]) => void;
 }
 
 interface SortableImageProps {
-  url: string;
+  image: VehicleImage;
   onDelete: () => void;
   isUploading?: boolean;
 }
 
-function SortableImage({ url, onDelete, isUploading }: SortableImageProps) {
+function SortableImage({ image, onDelete, isUploading }: SortableImageProps) {
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
     transition,
-  } = useSortable({ id: url });
+  } = useSortable({ id: image.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -67,8 +68,8 @@ function SortableImage({ url, onDelete, isUploading }: SortableImageProps) {
       ) : (
         <>
           <img
-            src={url}
-            alt="Vehicle image"
+            src={image.url}
+            alt={image.caption || "Vehicle image"}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
@@ -130,7 +131,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   existingImages = [],
   onImagesUpdate = () => {}
 }) => {
-  const [images, setImages] = useState<string[]>(existingImages);
+  const [images, setImages] = useState<VehicleImage[]>(existingImages);
   const [uploadingImages, setUploadingImages] = useState<string[]>([]);
   const [previewFiles, setPreviewFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -173,7 +174,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     setPreviewFiles(prev => [...prev, ...acceptedFiles]);
   }, [user]);
 
-  const updateDatabase = async (updatedImages: string[]) => {
+  const updateDatabase = async (updatedImages: VehicleImage[]) => {
     try {
       const vehicleRef = dbRef(db, `vehicles/${vehicleType}/${vehicleId}/images`);
       await set(vehicleRef, updatedImages);
@@ -204,18 +205,24 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         previewFiles.map(file => compressImage(file))
       );
 
-      const newUrls = await Promise.all(
-        compressedFiles.map(async (file) => {
+      const newImages = await Promise.all(
+        compressedFiles.map(async (file, index) => {
           const timestamp = Date.now();
           const safeFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
           const path = `vehicles/${vehicleType}/${vehicleId}/${timestamp}_${safeFileName}`;
           const imageRef = storageRef(storage, path);
           await uploadBytes(imageRef, file);
-          return getDownloadURL(imageRef);
+          const url = await getDownloadURL(imageRef);
+          
+          return {
+            id: `image-${timestamp}-${index}`,
+            url,
+            isPrimary: images.length === 0 && index === 0
+          };
         })
       );
       
-      const updatedImages = [...images, ...newUrls];
+      const updatedImages = [...images, ...newImages];
       
       // Update database first
       await updateDatabase(updatedImages);
@@ -239,10 +246,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     maxSize: 10485760, // 10MB
   });
 
-  const handleDelete = async (urlToDelete: string) => {
+  const handleDelete = async (imageToDelete: VehicleImage) => {
     try {
       // Update database first
-      const updatedImages = images.filter(url => url !== urlToDelete);
+      const updatedImages = images.filter(img => img.id !== imageToDelete.id);
       await updateDatabase(updatedImages);
 
       // Then update local state and notify parent
@@ -251,7 +258,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
       // Finally try to delete from storage
       try {
-        const imageRef = storageRef(storage, urlToDelete);
+        const imageRef = storageRef(storage, imageToDelete.url);
         await deleteObject(imageRef);
       } catch (storageError) {
         // If file doesn't exist in storage, that's okay
@@ -268,16 +275,22 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
     if (active.id !== over.id) {
       try {
-        const oldIndex = images.indexOf(active.id);
-        const newIndex = images.indexOf(over.id);
+        const oldIndex = images.findIndex(img => img.id === active.id);
+        const newIndex = images.findIndex(img => img.id === over.id);
         const newOrder = arrayMove(images, oldIndex, newIndex);
         
+        // Update isPrimary flag
+        const updatedOrder = newOrder.map((img, idx) => ({
+          ...img,
+          isPrimary: idx === 0
+        }));
+        
         // Update database first
-        await updateDatabase(newOrder);
+        await updateDatabase(updatedOrder);
         
         // Then update local state and notify parent
-        setImages(newOrder);
-        onImagesUpdate(newOrder);
+        setImages(updatedOrder);
+        onImagesUpdate(updatedOrder);
       } catch (error) {
         console.error('Error updating image order:', error);
         setError('Failed to update image order. Please try again.');
@@ -354,13 +367,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
           >
-            <SortableContext items={images} strategy={rectSortingStrategy}>
+            <SortableContext items={images.map(img => img.id)} strategy={rectSortingStrategy}>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {images.map((url, index) => (
+                {images.map((image) => (
                   <SortableImage
-                    key={url}
-                    url={url}
-                    onDelete={() => handleDelete(url)}
+                    key={image.id}
+                    image={image}
+                    onDelete={() => handleDelete(image)}
                   />
                 ))}
               </div>

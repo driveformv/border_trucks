@@ -7,49 +7,80 @@ import { SidebarFilters } from "./filters/SidebarFilters";
 import { applyFilters, sortVehicles } from "@/lib/utils/filterUtils";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import type { Vehicle } from "@/types/vehicle";
+import { useVehicles } from "@/lib/hooks/useVehicles";
 import type { VehicleFilters } from "@/types/filters";
 
 interface VehicleListProps {
-  initialVehicles: Vehicle[];
-  searchFilters: any;
+  searchFilters: {
+    searchTerm?: string;
+    make?: string[];
+    condition?: string[];
+    year?: string[];
+    type?: string[];
+    category?: string[];
+  };
   onClearSearch?: () => void;
 }
 
-export function VehicleList({ initialVehicles, searchFilters, onClearSearch }: VehicleListProps) {
-  const [filters, setFilters] = useState<VehicleFilters>({});
+export function VehicleList({ searchFilters, onClearSearch }: VehicleListProps) {
+  const { vehicles, loading } = useVehicles();
+  const [sidebarFilters, setSidebarFilters] = useState<Record<string, string[]>>({});
   const [sortBy, setSortBy] = useState("newest");
 
   const filteredVehicles = useMemo(() => {
-    const filtered = applyFilters(initialVehicles, filters, searchFilters.searchTerm || "");
+    // Merge sidebar filters with search filters
+    const mergedFilters: VehicleFilters = {
+      ...sidebarFilters,
+      // Add search filters
+      ...(searchFilters.make && { make: searchFilters.make }),
+      ...(searchFilters.condition && { condition: searchFilters.condition }),
+      ...(searchFilters.year && { year: searchFilters.year }),
+      ...(searchFilters.type && { type: searchFilters.type }),
+      ...(searchFilters.category && { category: searchFilters.category })
+    };
+
+    const filtered = applyFilters(vehicles, mergedFilters, searchFilters.searchTerm || "");
     return sortVehicles(filtered, sortBy);
-  }, [initialVehicles, filters, searchFilters, sortBy]);
+  }, [vehicles, sidebarFilters, searchFilters, sortBy]);
 
   const handleFilterChange = (category: string, value: string) => {
-    setFilters(prev => {
+    setSidebarFilters(prev => {
       const categoryFilters = prev[category] || [];
-      const updated = categoryFilters.includes(value)
-        ? categoryFilters.filter(v => v !== value)
+      const valueIndex = categoryFilters.findIndex(
+        (v: string) => v.toLowerCase() === value.toLowerCase()
+      );
+      
+      const updated = valueIndex >= 0
+        ? categoryFilters.filter((_: string, i: number) => i !== valueIndex)
         : [...categoryFilters, value];
       
-      return {
-        ...prev,
-        [category]: updated
-      };
+      const newFilters = { ...prev };
+      
+      if (updated.length > 0) {
+        newFilters[category] = updated;
+      } else {
+        delete newFilters[category];
+      }
+      
+      return newFilters;
     });
   };
 
   const clearAllFilters = () => {
-    setFilters({});
+    setSidebarFilters({});
     setSortBy("newest");
     if (onClearSearch) {
       onClearSearch();
     }
   };
 
-  const hasActiveFilters = Object.values(filters).some(value => 
+  const hasActiveFilters = Object.values(sidebarFilters).some(value => 
     Array.isArray(value) ? value.length > 0 : !!value
-  ) || !!searchFilters.searchTerm;
+  ) || Object.keys(searchFilters).length > 0;
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
@@ -75,7 +106,7 @@ export function VehicleList({ initialVehicles, searchFilters, onClearSearch }: V
         <aside className="lg:col-span-1">
           <SidebarFilters
             onFilterChange={handleFilterChange}
-            activeFilters={filters}
+            activeFilters={sidebarFilters}
             onClearFilters={clearAllFilters}
           />
         </aside>

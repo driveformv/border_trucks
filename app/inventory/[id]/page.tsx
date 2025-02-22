@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { VehicleDetailClient } from "@/components/vehicles/VehicleDetailClient";
 import { MapPin, Clock, AlertTriangle } from "lucide-react";
-import type { Vehicle } from "@/types/vehicle";
+import type { Vehicle, VehicleImage } from "@/types/vehicle";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ImageGallery } from "@/components/vehicles/ImageGallery";
@@ -23,8 +23,14 @@ export default function VehicleDetailPage({ params }: { params: { id: string } }
       const data = snapshot.val();
       if (data) {
         const vehicleData = {
-          ...data.details,
-          images: (data.images || []).map((url: string) => ({ url })),
+          ...data,
+          images: (data.images || []).map((img: string | VehicleImage, index: number) => 
+            typeof img === 'string' ? {
+              id: `img-${index}`,
+              url: img,
+              isPrimary: index === 0
+            } : img
+          ),
           specs: data.specs || {},
           features: data.features || [],
           status: data.status
@@ -60,9 +66,11 @@ export default function VehicleDetailPage({ params }: { params: { id: string } }
   }
 
   // Format the image data for the gallery
-  const galleryImages = (vehicle.images || []).map((img: any) => ({
+  const galleryImages = (vehicle.images || []).map((img: any, index: number) => ({
+    id: typeof img === 'string' ? `img-${index}` : (img.id || `img-${index}`),
     url: typeof img === 'string' ? img : img.url,
-    caption: img.caption || ''
+    caption: img.caption || '',
+    isPrimary: typeof img === 'string' ? index === 0 : (img.isPrimary !== undefined ? img.isPrimary : index === 0)
   }));
 
   return (

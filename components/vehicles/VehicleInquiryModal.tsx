@@ -20,13 +20,13 @@ interface VehicleInfo {
 interface VehicleInquiryModalProps {
   open: boolean;
   onClose: () => void;
-  vehicleInfo: VehicleInfo;
+  vehicle: Vehicle;
 }
 
 export function VehicleInquiryModal({
   open,
   onClose,
-  vehicleInfo,
+  vehicle,
 }: VehicleInquiryModalProps) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -41,7 +41,7 @@ export function VehicleInquiryModal({
           </DialogDescription>
         </DialogHeader>
         <div className="p-4 sm:p-6">
-          <VehicleInquiryForm vehicleInfo={vehicleInfo} />
+          <VehicleInquiryForm vehicle={vehicle} />
         </div>
       </DialogContent>
     </Dialog>

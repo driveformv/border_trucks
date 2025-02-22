@@ -10,7 +10,7 @@ const firebaseConfig = {
   projectId: "bordertrucks-d8624",
   storageBucket: "bordertrucks-d8624.firebasestorage.app",
   messagingSenderId: "1046286132964",
-  appId: "1:1046286132964:web:7ccbe2cdbb041df90deef1"
+  appId: "1:1046286132964:web:b8951fa9f7d392ba0deef1"
 };
 
 // Initialize Firebase

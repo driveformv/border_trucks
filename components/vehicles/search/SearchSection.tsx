@@ -4,28 +4,61 @@ import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FilterButton } from "./FilterButton";
+import type { FilterSection } from "@/types/filters";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
-interface SearchSectionProps {
-  onSearch: (filters: any) => void;
-  onClear?: () => void;
-  searchFilters: any;
+interface SearchFilters {
+  searchTerm?: string;
+  make?: string[];
+  condition?: string[];
+  year?: string[];
 }
 
-export function SearchSection({ onSearch, onClear, searchFilters }: SearchSectionProps) {
+interface SearchSectionProps {
+  onSearch: (filters: SearchFilters) => void;
+  onClear?: () => void;
+  searchFilters: SearchFilters;
+  filterSections: FilterSection[];
+}
+
+export function SearchSection({ onSearch, onClear, searchFilters, filterSections }: SearchSectionProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState({
-    make: "",
-    year: "",
-    priceRange: "",
-  });
+  const [filters, setFilters] = useState<Record<string, string[]>>({});
+
+  const handleFilterClick = (category: string, value: string) => {
+    setFilters(prev => {
+      const currentValues = prev[category] || [];
+      const newValues = currentValues.includes(value)
+        ? currentValues.filter(v => v !== value)
+        : [...currentValues, value];
+
+      const newFilters = { ...prev };
+      if (newValues.length > 0) {
+        newFilters[category] = newValues;
+      } else {
+        delete newFilters[category];
+      }
+
+      // Immediately trigger search with new filters
+      onSearch({
+        searchTerm,
+        ...newFilters
+      });
+
+      return newFilters;
+    });
+  };
 
   const handleSearch = () => {
-    onSearch({ 
+    onSearch({
       searchTerm,
-      ...filters,
-      type: filters.make ? "truck" : undefined,
-      condition: filters.condition
+      ...filters
     });
   };
 
@@ -37,25 +70,16 @@ export function SearchSection({ onSearch, onClear, searchFilters }: SearchSectio
 
   const handleClear = () => {
     setSearchTerm("");
-    setFilters({
-      make: "",
-      year: "",
-      priceRange: "",
-    });
+    setFilters({});
     if (onClear) {
       onClear();
     }
   };
 
-  // Listen for external clear events
   useEffect(() => {
     if (Object.keys(searchFilters).length === 0) {
       setSearchTerm("");
-      setFilters({
-        make: "",
-        year: "",
-        priceRange: "",
-      });
+      setFilters({});
     }
   }, [searchFilters]);
 
@@ -87,31 +111,39 @@ export function SearchSection({ onSearch, onClear, searchFilters }: SearchSectio
           </Button>
         </div>
 
-        {/* Filters */}
+        {/* Dynamic Filters */}
         <div className="flex gap-4">
-          <FilterButton
-            label="Make"
-            options={["International", "Kenworth", "Peterbilt", "Freightliner"]}
-            value={filters.make}
-            onChange={(value) => setFilters({ ...filters, make: value })}
-          />
-          <FilterButton
-            label="Year"
-            options={["2025", "2024", "2023", "2022"]}
-            value={filters.year}
-            onChange={(value) => setFilters({ ...filters, year: value })}
-          />
-          <FilterButton
-            label="Price Range"
-            options={[
-              "Under $150,000",
-              "$150,000 - $200,000",
-              "$200,000 - $250,000",
-              "Over $250,000"
-            ]}
-            value={filters.priceRange}
-            onChange={(value) => setFilters({ ...filters, priceRange: value })}
-          />
+          {filterSections.map((section) => (
+            <DropdownMenu key={section.id}>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className={`h-[52px] px-6 text-lg border-2 hover:bg-gray-50 ${
+                    filters[section.id]?.length ? 'bg-gray-100 border-gray-300' : 'border-gray-200'
+                  }`}
+                >
+                  {filters[section.id]?.length 
+                    ? `${section.title} (${filters[section.id].length})`
+                    : section.title
+                  }
+                  <ChevronDown className="ml-2 h-5 w-5 text-[#1C1C1C]" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-white border border-gray-200 shadow-lg">
+                {section.options.map((option) => (
+                  <DropdownMenuItem
+                    key={option.value}
+                    className={`flex items-center px-4 py-2 cursor-pointer ${
+                      filters[section.id]?.includes(option.value) ? 'bg-gray-100' : ''
+                    }`}
+                    onClick={() => handleFilterClick(section.id, option.value)}
+                  >
+                    {option.label} ({option.count})
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ))}
         </div>
       </div>
     </div>

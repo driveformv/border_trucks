@@ -1,0 +1,20 @@
+{
+  "rules": {
+    ".read": true,
+    "vehicles": {
+      ".read": true,
+      "trucks": {
+        ".read": true,
+        "$truckId": {
+          ".read": true
+        }
+      },
+      "trailers": {
+        ".read": true,
+        "$trailerId": {
+          ".read": true
+        }
+      }
+    }
+  }
+}

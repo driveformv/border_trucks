@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { SearchSection } from "@/components/vehicles/search/SearchSection";
 import { VehicleList } from "@/components/vehicles/VehicleList";
-import { useVehicles } from "@/lib/hooks/useVehicles";
+import type { FilterSection } from "@/types/filters";
 
 interface SearchFilters {
   searchTerm?: string;
@@ -14,8 +14,11 @@ interface SearchFilters {
   category?: string[];
 }
 
-export default function InventoryPage() {
-  const { filterSections } = useVehicles();
+interface InventoryClientProps {
+  filterSections: FilterSection[];
+}
+
+export function InventoryClient({ filterSections }: InventoryClientProps) {
   const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
 
   const handleSearch = (filters: SearchFilters) => {

@@ -28,7 +28,9 @@ export function VehicleShowcase({ vehicles }: VehicleShowcaseProps) {
                 {vehicle.year} {vehicle.make} {vehicle.model}
               </h3>
               <p className="text-xl font-semibold">
-                ${vehicle.price.toLocaleString()}
+                {vehicle.price > 0 
+                  ? `$${vehicle.price.toLocaleString()}`
+                  : "Contact for Price"}
               </p>
             </div>
           </div>

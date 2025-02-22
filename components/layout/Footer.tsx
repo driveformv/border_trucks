@@ -22,6 +22,7 @@ export function Footer() {
             <h3 className="text-lg font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li><Link href="/inventory" className="text-gray-400 hover:text-white">Inventory</Link></li>
+              <li><Link href="/fleetrite" className="text-gray-400 hover:text-white">Fleetrite®</Link></li>
               <li><Link href="/parts" className="text-gray-400 hover:text-white">Parts</Link></li>
               <li><Link href="/services" className="text-gray-400 hover:text-white">Services</Link></li>
               <li><Link href="/financing" className="text-gray-400 hover:text-white">Financing</Link></li>
@@ -93,7 +94,11 @@ export function Footer() {
           {/* Parts Stores */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h4 className="font-bold mb-2">Fleetrite® Silver City</h4>
+              <h4 className="font-bold mb-2">
+                <Link href="/fleetrite/silver-city" className="hover:text-white">
+                  Fleetrite® Silver City
+                </Link>
+              </h4>
               <address className="text-gray-400 not-italic">
                 <div className="flex items-start gap-2">
                   <MapPin className="h-5 w-5 mt-1 flex-shrink-0" />
@@ -110,7 +115,11 @@ export function Footer() {
             </div>
 
             <div>
-              <h4 className="font-bold mb-2">Fleetrite® El Paso</h4>
+              <h4 className="font-bold mb-2">
+                <Link href="/fleetrite/el-paso" className="hover:text-white">
+                  Fleetrite® El Paso
+                </Link>
+              </h4>
               <address className="text-gray-400 not-italic">
                 <div className="flex items-start gap-2">
                   <MapPin className="h-5 w-5 mt-1 flex-shrink-0" />
@@ -127,7 +136,11 @@ export function Footer() {
             </div>
 
             <div>
-              <h4 className="font-bold mb-2">Fleetrite® Alamogordo</h4>
+              <h4 className="font-bold mb-2">
+                <Link href="/fleetrite/alamogordo" className="hover:text-white">
+                  Fleetrite® Alamogordo
+                </Link>
+              </h4>
               <address className="text-gray-400 not-italic">
                 <div className="flex items-start gap-2">
                   <MapPin className="h-5 w-5 mt-1 flex-shrink-0" />
