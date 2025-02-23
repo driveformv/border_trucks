@@ -24,14 +24,36 @@ export default function Home() {
       const trucksData = snapshot.val();
       if (trucksData) {
         const trucksArray = Object.values(trucksData)
-          .filter((truck: any) => truck.images && truck.images.length > 0)
-          .map((truck: any) => ({
-            ...truck.details,
-            images: truck.images || [],
-            specs: truck.specs || {},
-            features: truck.features || [],
-            status: truck.status
-          }));
+          .filter((truck: any) => 
+            truck.images && 
+            truck.images.length > 0 && 
+            (truck.status === 'active' || truck.status === 'Available')
+          )
+          .map((truck: any) => {
+            const details = truck.details || truck;
+            return {
+              id: truck.id,
+              type: 'truck' as const,
+              condition: details.condition === 'New' ? 'New' : 'Used',
+              make: details.make,
+              model: details.model,
+              year: details.year,
+              price: details.price || 0,
+              mileage: details.mileage,
+              stockNumber: details.stockNumber || '',
+              vin: details.vin || '',
+              description: details.description || '',
+              images: truck.images || [],
+              engineMake: details.engineMake,
+              engineModel: details.engineModel,
+              transmission: details.transmission,
+              specs: truck.specs || {},
+              features: truck.features || [],
+              category: details.category || [],
+              status: (truck.status === 'active' || truck.status === 'Available') ? truck.status as Vehicle['status'] : 'Available',
+              location: details.location || ''
+            };
+          });
         setFeaturedVehicles(prev => [...prev.filter(v => v.type !== 'truck'), ...trucksArray.slice(0, 3)]);
       }
     });
@@ -40,14 +62,37 @@ export default function Home() {
       const trailersData = snapshot.val();
       if (trailersData) {
         const trailersArray = Object.values(trailersData)
-          .filter((trailer: any) => trailer.images && trailer.images.length > 0)
-          .map((trailer: any) => ({
-            ...trailer.details,
-            images: trailer.images || [],
-            specs: trailer.specs || {},
-            features: trailer.features || [],
-            status: trailer.status
-          }));
+          .filter((trailer: any) => 
+            trailer.images && 
+            trailer.images.length > 0 && 
+            (trailer.status === 'active' || trailer.status === 'Available')
+          )
+          .map((trailer: any) => {
+            const details = trailer.details || trailer;
+            return {
+              id: trailer.id,
+              type: 'trailer' as const,
+              condition: details.condition === 'New' ? 'New' : 'Used',
+              make: details.make,
+              model: details.model,
+              year: details.year,
+              price: details.price || 0,
+              mileage: details.mileage,
+              stockNumber: details.stockNumber || '',
+              vin: details.vin || '',
+              description: details.description || '',
+              images: trailer.images || [],
+              trailerType: details.trailerType,
+              length: details.length,
+              width: details.width,
+              height: details.height,
+              specs: trailer.specs || {},
+              features: trailer.features || [],
+              category: details.category || [],
+              status: (trailer.status === 'active' || trailer.status === 'Available') ? trailer.status as Vehicle['status'] : 'Available',
+              location: details.location || ''
+            };
+          });
         setFeaturedVehicles(prev => [...prev.filter(v => v.type !== 'trailer'), ...trailersArray.slice(0, 3)]);
       }
       setLoading(false);

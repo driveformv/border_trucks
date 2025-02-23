@@ -7,13 +7,16 @@ import ImageUploader from '@/components/admin/ImageUploader';
 import { useRouter } from 'next/navigation';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useAuth } from '@/lib/firebase/auth-context';
+import { DataSnapshot } from 'firebase/database';
+import type { Vehicle as VehicleType, VehicleImage } from '@/types/vehicle';
 
 interface Vehicle {
   id: string;
   vin: string;
   description: string;
   type: 'trucks' | 'trailers';
-  images?: string[];
+  images?: VehicleImage[];
+  status?: 'active' | 'inactive';
 }
 
 export default function VehicleManagement() {
@@ -53,10 +56,10 @@ export default function VehicleManagement() {
         const trailersRef = ref(db, 'vehicles/trailers');
 
         const [trucksSnap, trailersSnap] = await Promise.all([
-          new Promise((resolve) => {
+          new Promise<DataSnapshot>((resolve) => {
             onValue(trucksRef, resolve, { onlyOnce: true });
           }),
-          new Promise((resolve) => {
+          new Promise<DataSnapshot>((resolve) => {
             onValue(trailersRef, resolve, { onlyOnce: true });
           }),
         ]);
@@ -73,6 +76,7 @@ export default function VehicleManagement() {
           type: 'trucks',
           description: data.details?.description || '',
           vin: data.details?.vin || '',
+          status: data.status || 'inactive'
         }));
 
         const trailersArray = Object.entries(trailersData).map(([id, data]: [string, any]) => ({
@@ -81,6 +85,7 @@ export default function VehicleManagement() {
           type: 'trailers',
           description: data.details?.description || '',
           vin: data.details?.vin || '',
+          status: data.status || 'inactive'
         }));
 
         // Sort vehicles by ID in descending order (newest first)
@@ -247,7 +252,12 @@ export default function VehicleManagement() {
                             : 'hover:bg-white border border-transparent'
                         }`}
                       >
-                        <span className="font-medium text-[#1b2637]">ID: {vehicle.id}</span>
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-[#1b2637]">ID: {vehicle.id}</span>
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${vehicle.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                            {vehicle.status === 'active' ? 'Active' : 'Inactive'}
+                          </span>
+                        </div>
                       </button>
                     ))}
                   </div>

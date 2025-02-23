@@ -27,7 +27,7 @@ interface ImageGalleryProps {
 export function ImageGallery({ images, title }: ImageGalleryProps) {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
 
-  if (!images || images.length === 0) return null;
+  if (!images?.length) return null;
 
   return (
     <div className="space-y-4">

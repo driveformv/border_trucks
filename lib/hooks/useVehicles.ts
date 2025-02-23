@@ -52,7 +52,7 @@ export function useVehicles(includeInactive: boolean = false) {
             type: 'truck',
             ...(data as any)
           }))
-          .filter(vehicle => includeInactive || vehicle.status === 'active') : [];
+          .filter(vehicle => includeInactive || vehicle.status === 'active' || vehicle.status === 'Available') : [];
 
       onValue(trailersRef, (snapshot) => {
         const trailersData = snapshot.exists() ? 
@@ -62,7 +62,7 @@ export function useVehicles(includeInactive: boolean = false) {
               type: 'trailer',
               ...(data as any)
             }))
-            .filter(vehicle => includeInactive || vehicle.status === 'active') : [];
+            .filter(vehicle => includeInactive || vehicle.status === 'active' || vehicle.status === 'Available') : [];
 
         const vehicleData = [...trucksData, ...trailersData];
         console.log('Realtime update received:', vehicleData);

@@ -36,7 +36,8 @@ async function fetchImagesForVehicle(vehicleType: 'trucks' | 'trailers', vehicle
         return {
           id: imageRef.name.split('.')[0], // Use filename without extension as ID
           url,
-          isPrimary: false // Will set first image as primary later
+          isPrimary: false, // Will set first image as primary later
+          isActive: true // Default new images to active
         };
       })
     );

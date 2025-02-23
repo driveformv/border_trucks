@@ -3,6 +3,7 @@ export interface VehicleImage {
   url: string;
   isPrimary: boolean;
   caption?: string;
+  isActive: boolean;
 }
 
 export interface Vehicle {

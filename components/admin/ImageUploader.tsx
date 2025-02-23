@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { ref as storageRef, uploadBytes, deleteObject, getDownloadURL } from 'firebase/storage';
-import { ref as dbRef, set } from 'firebase/database';
+import { ref as dbRef, set, get } from 'firebase/database';
 import { storage, db } from '@/lib/firebase/config';
-import { XCircle, GripHorizontal } from 'lucide-react';
+import { XCircle, GripHorizontal, EyeIcon, EyeOffIcon } from 'lucide-react';
 import Image from 'next/image';
 import imageCompression from 'browser-image-compression';
 import {
@@ -31,17 +31,19 @@ import type { VehicleImage } from '@/types/vehicle';
 interface ImageUploaderProps {
   vehicleId: string;
   vehicleType: 'trucks' | 'trailers';
-  existingImages: VehicleImage[];
-  onImagesUpdate?: (images: VehicleImage[]) => void;
+  existingImages: (VehicleImage | string)[];
+  onImagesUpdate?: (images: (VehicleImage | string)[]) => void;
 }
 
 interface SortableImageProps {
   image: VehicleImage;
   onDelete: () => void;
+  onToggleActive: () => void;
   isUploading?: boolean;
+  vehicleStatus: string;
 }
 
-function SortableImage({ image, onDelete, isUploading }: SortableImageProps) {
+function SortableImage({ image, onDelete, onToggleActive, isUploading, vehicleStatus }: SortableImageProps) {
   const {
     attributes,
     listeners,
@@ -72,12 +74,27 @@ function SortableImage({ image, onDelete, isUploading }: SortableImageProps) {
             alt={image.caption || "Vehicle image"}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+          {!image.isActive && <div className="absolute inset-0 bg-black bg-opacity-60 transition-opacity" />}
+          <div className="absolute top-2 right-2">
+            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${vehicleStatus === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              {vehicleStatus === 'active' ? 'Active' : 'Inactive'}
+            </span>
+          </div>
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center gap-2 opacity-0 hover:opacity-100 transition-opacity">
             <button
               onClick={onDelete}
               className="p-2 bg-white rounded-full hover:bg-gray-50"
             >
               <Trash2 className="h-4 w-4 text-red-600" />
+            </button>
+            <button
+              onClick={onToggleActive}
+              className="p-2 bg-white rounded-full hover:bg-gray-50"
+            >
+              {image.isActive ? 
+                <EyeOffIcon className="h-4 w-4 text-gray-600" /> :
+                <EyeIcon className="h-4 w-4 text-gray-600" />
+              }
             </button>
           </div>
         </>
@@ -131,7 +148,34 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   existingImages = [],
   onImagesUpdate = () => {}
 }) => {
-  const [images, setImages] = useState<VehicleImage[]>(existingImages);
+  const [vehicleStatus, setVehicleStatus] = useState<string>('');
+  const [images, setImages] = useState<VehicleImage[]>([]);
+
+  // Load vehicle status and images from database
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Get vehicle status
+        const vehicleRef = dbRef(db, `vehicles/${vehicleType}/${vehicleId}`);
+        const vehicleSnapshot = await get(vehicleRef);
+        if (vehicleSnapshot.exists()) {
+          const vehicleData = vehicleSnapshot.val();
+          setVehicleStatus(vehicleData.status || '');
+        }
+
+        // Get images
+        const imagesRef = dbRef(db, `vehicles/${vehicleType}/${vehicleId}/images`);
+        const imagesSnapshot = await get(imagesRef);
+        if (imagesSnapshot.exists()) {
+          setImages(imagesSnapshot.val());
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+        setError('Failed to load data');
+      }
+    };
+    loadData();
+  }, [vehicleId, vehicleType]);
   const [uploadingImages, setUploadingImages] = useState<string[]>([]);
   const [previewFiles, setPreviewFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -217,7 +261,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           return {
             id: `image-${timestamp}-${index}`,
             url,
-            isPrimary: images.length === 0 && index === 0
+            isPrimary: images.length === 0 && index === 0,
+            isActive: false // New images are inactive by default
           };
         })
       );
@@ -245,6 +290,26 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     },
     maxSize: 10485760, // 10MB
   });
+
+  const handleToggleActive = async (imageToToggle: VehicleImage) => {
+    try {
+      const updatedImages = images.map(img => 
+        img.id === imageToToggle.id 
+          ? { ...img, isActive: !img.isActive }
+          : img
+      );
+      
+      // Update database first
+      await updateDatabase(updatedImages);
+      
+      // Then update local state and notify parent
+      setImages(updatedImages);
+      onImagesUpdate(updatedImages);
+    } catch (error) {
+      console.error('Error toggling image status:', error);
+      setError('Failed to update image status. Please try again.');
+    }
+  };
 
   const handleDelete = async (imageToDelete: VehicleImage) => {
     try {
@@ -279,7 +344,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         const newIndex = images.findIndex(img => img.id === over.id);
         const newOrder = arrayMove(images, oldIndex, newIndex);
         
-        // Update isPrimary flag
+        // Update isPrimary flag while preserving isActive status
         const updatedOrder = newOrder.map((img, idx) => ({
           ...img,
           isPrimary: idx === 0
@@ -298,13 +363,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     }
   };
 
-  // Reset state when vehicle changes
+  // Reset upload state when vehicle changes
   useEffect(() => {
-    setImages(existingImages);
     setPreviewFiles([]);
     setUploadingImages([]);
     setError(null);
-  }, [vehicleId, vehicleType, existingImages]);
+  }, [vehicleId, vehicleType]);
 
   return (
     <div className="space-y-4">
@@ -374,6 +438,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                     key={image.id}
                     image={image}
                     onDelete={() => handleDelete(image)}
+                    onToggleActive={() => handleToggleActive(image)}
+                    vehicleStatus={vehicleStatus}
                   />
                 ))}
               </div>

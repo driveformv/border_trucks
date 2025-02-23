@@ -21,7 +21,8 @@ const auth = getAuth(app);
 const placeholderImage: VehicleImage = {
   id: 'placeholder',
   url: 'https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Fplaceholder.jpg?alt=media',
-  isPrimary: true
+  isPrimary: true,
+  isActive: true
 };
 
 function convertToVehicleImage(image: string | VehicleImage, index: number): VehicleImage {
@@ -29,10 +30,18 @@ function convertToVehicleImage(image: string | VehicleImage, index: number): Veh
     return {
       id: `image-${index}`,
       url: image,
-      isPrimary: index === 0
+      isPrimary: index === 0,
+      isActive: true // Default to active for existing images
     };
   }
-  return image;
+  // If it's already a VehicleImage but missing isActive, add it
+  return {
+    id: image.id,
+    url: image.url,
+    isPrimary: image.isPrimary,
+    caption: image.caption,
+    isActive: 'isActive' in image ? image.isActive : true // Default to active if not present
+  };
 }
 
 async function standardizeVehicleImages(vehicleType: 'trucks' | 'trailers', vehicleId: string, vehicle: Vehicle) {

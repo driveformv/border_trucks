@@ -18,18 +18,10 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showInquiryModal, setShowInquiryModal] = useState(false);
 
-  // Default image if none available
-  const defaultImage = "https://firebasestorage.googleapis.com/v0/b/bordertrucks-d8624.firebasestorage.app/o/vehicles%2Fplaceholder.jpg?alt=media";
-
-  // Safely get image URL
   const getImageUrl = () => {
-    if (!vehicle.images || !vehicle.images.length) {
-      return defaultImage;
-    }
+    if (!vehicle.images?.length) return null;
     const image = vehicle.images[currentImageIndex];
-    if (!image) {
-      return defaultImage;
-    }
+    if (!image) return null;
     return typeof image === "string" ? image : image.url;
   };
 
@@ -60,14 +52,16 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative aspect-[16/9]">
-        <Image
-          src={getImageUrl()}
-          alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
-          width={800}
-          height={450}
-          className="object-cover w-full h-full"
-          priority={currentImageIndex === 0}
-        />
+        {getImageUrl() && (
+          <Image
+            src={getImageUrl()!}
+            alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
+            width={800}
+            height={450}
+            className="object-cover w-full h-full"
+            priority={currentImageIndex === 0}
+          />
+        )}
 
         {vehicle.images && vehicle.images.length > 1 && (
           <>
