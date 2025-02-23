@@ -66,15 +66,23 @@ export async function GET() {
     .join("")}
 </urlset>`;
 
-    // Return the XML with proper content type
+    // Return the XML with enhanced caching headers
     return new NextResponse(xml, {
       headers: {
         "Content-Type": "application/xml",
-        "Cache-Control": "public, max-age=3600, s-maxage=3600",
+        "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400",
+        "CDN-Cache-Control": "public, max-age=3600",
+        "Vercel-CDN-Cache-Control": "public, max-age=3600",
+        "Surrogate-Control": "public, max-age=3600",
       },
     });
   } catch (error) {
     console.error("Error generating sitemap:", error);
-    return new NextResponse("Error generating sitemap", { status: 500 });
+    return new NextResponse("Error generating sitemap", { 
+      status: 500,
+      headers: {
+        "Cache-Control": "no-store"
+      }
+    });
   }
 }

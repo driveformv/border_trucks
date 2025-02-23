@@ -34,7 +34,7 @@ export default function Home() {
             return {
               id: truck.id,
               type: 'truck' as const,
-              condition: details.condition === 'New' ? 'New' : 'Used',
+              condition: (details.condition === 'New' ? 'New' : 'Used') as 'New' | 'Used',
               make: details.make,
               model: details.model,
               year: details.year,
@@ -72,7 +72,7 @@ export default function Home() {
             return {
               id: trailer.id,
               type: 'trailer' as const,
-              condition: details.condition === 'New' ? 'New' : 'Used',
+              condition: (details.condition === 'New' ? 'New' : 'Used') as 'New' | 'Used',
               make: details.make,
               model: details.model,
               year: details.year,

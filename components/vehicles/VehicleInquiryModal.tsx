@@ -1,5 +1,6 @@
 "use client";
 
+import type { Vehicle } from "@/types/vehicle";
 import {
   Dialog,
   DialogContent,
@@ -41,7 +42,15 @@ export function VehicleInquiryModal({
           </DialogDescription>
         </DialogHeader>
         <div className="p-4 sm:p-6">
-          <VehicleInquiryForm vehicle={vehicle} />
+          <VehicleInquiryForm
+            vehicleInfo={{
+              id: vehicle.id,
+              year: vehicle.year,
+              make: vehicle.make,
+              model: vehicle.model,
+              stockNumber: vehicle.stockNumber
+            }}
+          />
         </div>
       </DialogContent>
     </Dialog>

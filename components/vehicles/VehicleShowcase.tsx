@@ -41,14 +41,29 @@ export function VehicleShowcase({ vehicles }: VehicleShowcaseProps) {
           </div>
           <div className="p-6">
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <div>
-                <span className="text-sm text-gray-500">Engine</span>
-                <p className="font-medium">{vehicle.engineMake} {vehicle.engineModel}</p>
-              </div>
-              <div>
-                <span className="text-sm text-gray-500">Transmission</span>
-                <p className="font-medium">{vehicle.transmission}</p>
-              </div>
+              {vehicle.type === 'trailer' ? (
+                <>
+                  <div>
+                    <span className="text-sm text-gray-500">Condition</span>
+                    <p className="font-medium">{vehicle.condition}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-500">Model</span>
+                    <p className="font-medium">{vehicle.model}</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <span className="text-sm text-gray-500">Engine</span>
+                    <p className="font-medium">{vehicle.engineMake} {vehicle.engineModel}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-500">Transmission</span>
+                    <p className="font-medium">{vehicle.transmission}</p>
+                  </div>
+                </>
+              )}
             </div>
             <Button asChild className="w-full">
               <Link href={`/inventory/${vehicle.id}`}>View Details</Link>
