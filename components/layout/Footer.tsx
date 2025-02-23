@@ -21,6 +21,7 @@ export function Footer() {
           <div>
             <h3 className="text-lg font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
+              <li><Link href="/s13-integrated-powertrain" className="text-gray-400 hover:text-white">S13 Integrated Powertrain</Link></li>
               <li><Link href="/inventory" className="text-gray-400 hover:text-white">Inventory</Link></li>
               <li><Link href="/fleetrite" className="text-gray-400 hover:text-white">Fleetrite Parts</Link></li>
               <li><Link href="/services" className="text-gray-400 hover:text-white">Services</Link></li>
