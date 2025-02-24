@@ -1,32 +1,47 @@
 "use client";
 
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import EventImageUploader from "./EventImageUploader";
-import { ref, push, set } from "firebase/database";
+import { ref, set } from "firebase/database";
 import { db } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import moment from "moment-timezone";
+import { Event } from "@/types/event";
 
 const TIMEZONE = "America/Denver";
 
-export default function CreateEventForm() {
+interface EditEventFormProps {
+  event: Event;
+}
+
+export default function EditEventForm({ event }: EditEventFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState(event.imageUrl || "");
   const [formData, setFormData] = useState({
-    title: "",
-    dateTime: "",
-    location: "",
-    description: "",
-    vendor: "",
-    maxAttendees: "",
+    title: event.title,
+    dateTime: event.dateTime,
+    location: event.location,
+    description: event.description,
+    vendor: event.vendor,
+    maxAttendees: event.maxAttendees?.toString() || "",
   });
+
+  useEffect(() => {
+    setFormData({
+      title: event.title,
+      dateTime: event.dateTime,
+      location: event.location,
+      description: event.description,
+      vendor: event.vendor,
+      maxAttendees: event.maxAttendees?.toString() || "",
+    });
+    setImageUrl(event.imageUrl || "");
+  }, [event]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -46,22 +61,32 @@ export default function CreateEventForm() {
       // Convert to Mountain Time
       const mountainTime = moment.tz(formData.dateTime, TIMEZONE).toISOString();
 
-      const eventsRef = ref(db, "events");
-      const newEventRef = push(eventsRef);
+      const eventRef = ref(db, `events/${event.id}`);
 
-      await set(newEventRef, {
+      await set(eventRef, {
         ...formData,
         dateTime: mountainTime,
         maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees) : null,
         imageUrl,
-        currentAttendees: 0,
+        currentAttendees: event.currentAttendees || 0,
       });
+
+      // Manually update the event list in the admin page
+      // by dispatching a custom event
+      window.dispatchEvent(new CustomEvent('event-updated', { detail: {
+        ...formData,
+        id: event.id,
+        dateTime: mountainTime,
+        maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees) : null,
+        imageUrl,
+        currentAttendees: event.currentAttendees || 0,
+      }}))
 
       router.push("/admin/events");
       router.refresh();
     } catch (error) {
-      console.error("Error creating event:", error);
-      alert("Failed to create event. Please try again.");
+      console.error("Error updating event:", error);
+      alert("Failed to update event. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -144,13 +169,14 @@ export default function CreateEventForm() {
           <div className="mt-2">
             <EventImageUploader
               onUploadComplete={(url: string) => setImageUrl(url)}
+              initialImageUrl={imageUrl}
             />
           </div>
         </div>
       </div>
 
       <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "Creating Event..." : "Create Event"}
+        {loading ? "Updating Event..." : "Update Event"}
       </Button>
     </form>
   );

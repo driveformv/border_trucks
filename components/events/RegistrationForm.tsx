@@ -17,7 +17,9 @@ const formSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
   jobTitle: z.string().min(2, "Job title must be at least 2 characters"),
-  numberOfAttendees: z.number().min(1, "Must have at least 1 attendee").max(10, "Maximum 10 attendees per registration"),
+  numberOfAttendees: z.number()
+    .min(1, "Must have at least 1 attendee")
+    .max(10, "Maximum 10 attendees per registration"),
   specialRequirements: z.string().optional(),
 });
 
@@ -29,6 +31,8 @@ interface RegistrationFormProps {
 
 export default function RegistrationForm({ event }: RegistrationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const availableSpots = event.maxAttendees ? event.maxAttendees - (event.currentAttendees || 0) : null;
+  const isFull = availableSpots !== null && availableSpots <= 0;
 
   const {
     register,
@@ -37,6 +41,9 @@ export default function RegistrationForm({ event }: RegistrationFormProps) {
     reset,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      numberOfAttendees: 1,
+    },
   });
 
   const onSubmit = async (data: FormData) => {
@@ -55,7 +62,13 @@ export default function RegistrationForm({ event }: RegistrationFormProps) {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit registration");
+        const errorData = await response.json();
+        if (errorData.error === "Event is at capacity") {
+          toast.error("This event is now at capacity. Please try again later.");
+        } else {
+          throw new Error("Failed to submit registration");
+        }
+        return;
       }
 
       toast.success("Registration submitted successfully!");
@@ -70,6 +83,13 @@ export default function RegistrationForm({ event }: RegistrationFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {availableSpots !== null && (
+        <p className="text-sm text-gray-600">
+          {isFull
+            ? "This event is full."
+            : `Available spots: ${availableSpots}`}
+        </p>
+      )}
       <div className="space-y-4">
         <div>
           <Label htmlFor="attendeeName">Full Name</Label>
@@ -139,9 +159,18 @@ export default function RegistrationForm({ event }: RegistrationFormProps) {
             id="numberOfAttendees"
             type="number"
             min="1"
-            max="10"
-            {...register("numberOfAttendees", { valueAsNumber: true })}
+            max={availableSpots !== null ? availableSpots.toString() : "10"}
+            {...register("numberOfAttendees", {
+              valueAsNumber: true,
+              validate: (value: number) => {
+                if (availableSpots !== null && value > availableSpots) {
+                  return `Cannot register more than ${availableSpots} attendees.`;
+                }
+                return true;
+              },
+            })}
             className={errors.numberOfAttendees ? "border-red-500" : ""}
+            disabled={isFull}
           />
           {errors.numberOfAttendees && (
             <p className="text-red-500 text-sm mt-1">{errors.numberOfAttendees.message}</p>
@@ -155,6 +184,7 @@ export default function RegistrationForm({ event }: RegistrationFormProps) {
             {...register("specialRequirements")}
             placeholder="Any dietary requirements or special accommodations needed?"
             className={errors.specialRequirements ? "border-red-500" : ""}
+            disabled={isFull}
           />
           {errors.specialRequirements && (
             <p className="text-red-500 text-sm mt-1">{errors.specialRequirements.message}</p>
@@ -162,7 +192,7 @@ export default function RegistrationForm({ event }: RegistrationFormProps) {
         </div>
       </div>
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
+      <Button type="submit" className="w-full" disabled={isSubmitting || isFull}>
         {isSubmitting ? "Submitting..." : "Submit Registration"}
       </Button>
     </form>

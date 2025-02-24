@@ -9,15 +9,52 @@ import { Label } from "@/components/ui/label";
 import EventRegistrationsTable from "@/components/admin/EventRegistrationsTable";
 import { ref, get, update } from "firebase/database";
 import { db } from "@/lib/firebase";
+import EditEventForm from "@/components/events/EditEventForm";
+
+interface CustomEventDetail {
+  id: string;
+  title: string;
+  dateTime: string;
+  location: string;
+  description: string;
+  vendor: string;
+  maxAttendees: number | null | undefined;
+  imageUrl: string;
+  currentAttendees: number;
+}
 
 export default function AdminEventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [maxAttendees, setMaxAttendees] = useState<string>("");
 
   useEffect(() => {
     loadEvents();
+
+    const handleEventUpdated = (event: CustomEvent<CustomEventDetail>) => {
+      const updatedEvent = event.detail;
+      setEvents(prevEvents => {
+        return prevEvents.map(e => {
+          if (e.id === updatedEvent.id) {
+            return { ...e, ...updatedEvent };
+          } else {
+            return e;
+          }
+        }) as Event[];
+      });
+      setSelectedEvent(prevSelectedEvent => {
+        if (prevSelectedEvent && prevSelectedEvent.id === updatedEvent.id) {
+          return { ...prevSelectedEvent, ...updatedEvent } as Event;
+        }
+        return prevSelectedEvent;
+      });
+    };
+
+    window.addEventListener('event-updated', handleEventUpdated as EventListener);
+
+    return () => {
+      window.removeEventListener('event-updated', handleEventUpdated as EventListener);
+    };
   }, []);
 
   const loadEvents = async () => {
@@ -37,31 +74,6 @@ export default function AdminEventsPage() {
       console.error("Error loading events:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const updateEventCapacity = async (eventId: string) => {
-    try {
-      const max = parseInt(maxAttendees);
-      if (isNaN(max) || max < 1) {
-        throw new Error("Please enter a valid number");
-      }
-
-      await update(ref(db, `events/${eventId}`), {
-        maxAttendees: max,
-      });
-
-      // Update local state
-      setEvents(events.map(event => 
-        event.id === eventId 
-          ? { ...event, maxAttendees: max }
-          : event
-      ));
-
-      setMaxAttendees("");
-    } catch (error) {
-      console.error("Error updating capacity:", error);
-      alert(error instanceof Error ? error.message : "Failed to update capacity");
     }
   };
 
@@ -97,7 +109,7 @@ export default function AdminEventsPage() {
                 >
                   <div className="font-medium">{event.title}</div>
                   <div className="text-sm text-gray-500">
-                    {new Date(event.date).toLocaleDateString()}
+                    {new Date(event.dateTime).toLocaleDateString()}
                   </div>
                 </button>
               ))}
@@ -108,45 +120,7 @@ export default function AdminEventsPage() {
         <div className="md:col-span-3">
           {selectedEvent ? (
             <div className="space-y-6">
-              <div className="bg-white p-6 rounded-lg border">
-                <h2 className="text-2xl font-bold mb-4">{selectedEvent.title}</h2>
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <p className="text-gray-600">Date</p>
-                    <p>{new Date(selectedEvent.date).toLocaleDateString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Time</p>
-                    <p>{selectedEvent.time}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Location</p>
-                    <p>{selectedEvent.location}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Vendor</p>
-                    <p>{selectedEvent.vendor}</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4 items-end">
-                  <div className="flex-1">
-                    <Label htmlFor="maxAttendees">Maximum Attendees</Label>
-                    <Input
-                      id="maxAttendees"
-                      type="number"
-                      min="1"
-                      value={maxAttendees}
-                      onChange={(e) => setMaxAttendees(e.target.value)}
-                      placeholder={selectedEvent.maxAttendees?.toString() || "No limit"}
-                    />
-                  </div>
-                  <Button onClick={() => updateEventCapacity(selectedEvent.id)}>
-                    Update Capacity
-                  </Button>
-                </div>
-              </div>
-
+              <EditEventForm event={selectedEvent} />
               <EventRegistrationsTable event={selectedEvent} />
             </div>
           ) : (

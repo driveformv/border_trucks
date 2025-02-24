@@ -3,18 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import Link from "next/link";
 import { CalendarIcon, MapPinIcon, ClockIcon, UsersIcon } from "@heroicons/react/24/outline";
+import moment from "moment-timezone";
+
+const TIMEZONE = "America/Denver";
 
 interface EventCardProps {
   event: Event;
 }
 
 export default function EventCard({ event }: EventCardProps) {
-  const formattedDate = new Date(event.date).toLocaleDateString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const mountainTime = moment.tz(event.dateTime ?? "", TIMEZONE);
+  const formattedDate = mountainTime.format("MMMM D, YYYY");
+  const formattedTime = mountainTime.format("h:mm A");
 
   return (
     <Card className="flex flex-col h-full">
@@ -39,7 +39,7 @@ export default function EventCard({ event }: EventCardProps) {
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <ClockIcon className="h-5 w-5" />
-            <span>{event.time}</span>
+            <span>{formattedTime}</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <MapPinIcon className="h-5 w-5" />

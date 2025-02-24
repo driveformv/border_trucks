@@ -40,6 +40,7 @@
     "firebase-admin": "^13.1.0",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.344.0",
+    "moment-timezone": "^0.5.47",
     "next": "13.5.1",
     "nodemailer": "^6.9.16",
     "postcss": "8.4.30",

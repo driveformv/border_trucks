@@ -7,14 +7,17 @@ import { storage } from '@/lib/firebase/config';
 import { Camera } from 'lucide-react';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import imageCompression from 'browser-image-compression';
+import Image from 'next/image';
 
 interface EventImageUploaderProps {
   onUploadComplete: (url: string) => void;
+  initialImageUrl?: string;
 }
 
-export default function EventImageUploader({ onUploadComplete }: EventImageUploaderProps) {
+export default function EventImageUploader({ onUploadComplete, initialImageUrl }: EventImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(initialImageUrl || null);
 
   const compressImage = async (file: File) => {
     try {
@@ -51,6 +54,7 @@ export default function EventImageUploader({ onUploadComplete }: EventImageUploa
       const url = await getDownloadURL(imageRef);
       
       onUploadComplete(url);
+      setPreviewUrl(url);
     } catch (err: any) {
       setError(err.message || 'Failed to upload image');
       console.error('Upload error:', err);
@@ -70,6 +74,16 @@ export default function EventImageUploader({ onUploadComplete }: EventImageUploa
 
   return (
     <div className="space-y-4">
+      {previewUrl && (
+        <div className="relative w-full h-48 rounded-lg overflow-hidden">
+          <Image
+            src={previewUrl}
+            alt="Event Preview"
+            fill
+            style={{ objectFit: 'cover' }}
+          />
+        </div>
+      )}
       <div 
         {...getRootProps()} 
         className={`border-2 border-dashed rounded-lg p-6 cursor-pointer
