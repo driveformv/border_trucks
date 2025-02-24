@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Event } from "@/types/event";
 import { Button } from "@/components/ui/button";
