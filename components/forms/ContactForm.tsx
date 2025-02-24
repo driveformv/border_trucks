@@ -62,8 +62,17 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      // TODO: Implement actual form submission
-      console.log(values);
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
       
       toast.success("Message Sent", {
         description: "We'll get back to you as soon as possible.",
@@ -71,6 +80,7 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
       
       form.reset();
     } catch (error) {
+      console.error('Contact form submission error:', error);
       toast.error("Error", {
         description: "There was a problem sending your message. Please try again.",
       });
@@ -108,7 +118,7 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
                     className="bg-white text-black border-white/10 placeholder:text-black/60" 
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-[#FF2A00]" />
               </FormItem>
             )}
           />
@@ -127,7 +137,7 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
                     className="bg-white text-black border-white/10 placeholder:text-black/60" 
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-[#FF2A00]" />
               </FormItem>
             )}
           />
@@ -146,7 +156,7 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
                     className="bg-white text-black border-white/10 placeholder:text-black/60" 
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-[#FF2A00]" />
               </FormItem>
             )}
           />
@@ -164,7 +174,7 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
                     className="bg-white text-black border-white/10 placeholder:text-black/60" 
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-[#FF2A00]" />
               </FormItem>
             )}
           />
@@ -183,7 +193,7 @@ export function ContactForm({ vehicleInfo }: ContactFormProps) {
                   {...field} 
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-[#FF2A00]" />
             </FormItem>
           )}
         />

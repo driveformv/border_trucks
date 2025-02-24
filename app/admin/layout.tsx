@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
+import AdminNav from '@/components/admin/AdminNav';
 
 export default function AdminLayout({
   children,
@@ -38,6 +39,7 @@ export default function AdminLayout({
     <div className="min-h-screen bg-[#f8f9fa]">
       {/* Admin content */}
       <main className="max-w-7xl mx-auto px-4 py-6">
+        <AdminNav />
         {children}
       </main>
     </div>

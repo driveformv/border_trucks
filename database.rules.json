@@ -1,19 +1,37 @@
 {
   "rules": {
-    ".read": true,
     "vehicles": {
       ".read": true,
+      ".write": "auth != null",
       "trucks": {
         ".read": true,
-        "$truckId": {
-          ".read": true
-        }
+        ".write": "auth != null"
       },
       "trailers": {
         ".read": true,
-        "$trailerId": {
-          ".read": true
-        }
+        ".write": "auth != null"
+      }
+    },
+    "contacts": {
+      ".read": true,
+      ".write": true
+    },
+    "inquiries": {
+      ".read": true,
+      ".write": true
+    },
+    "events": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "event_registrations": {
+      ".read": true,
+      ".write": true
+    },
+    "admin": {
+      "users": {
+        ".read": "auth != null",
+        ".write": false
       }
     }
   }

@@ -25,5 +25,11 @@ service firebase.storage {
     match /test/{testFile} {
       allow write: if request.auth != null;
     }
+    
+    // Allow public read access to event images
+    match /events/{imageFile} {
+      allow read;  // Anyone can read event images
+      allow write: if request.auth != null;
+    }
   }
 }

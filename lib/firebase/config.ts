@@ -1,7 +1,7 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getDatabase } from "firebase/database";
 import { getStorage } from "firebase/storage";
-import { getAuth } from "firebase/auth";
+import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAG7Pe8bHkSi3omQ07mytxZhkfWiir1tEo",
@@ -20,5 +20,11 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0
 export const db = getDatabase(app);
 export const storage = getStorage(app);
 export const auth = getAuth(app);
+
+// Enable auth persistence
+setPersistence(auth, browserLocalPersistence)
+  .catch((error: Error) => {
+    console.error("Error enabling auth persistence:", error);
+  });
 
 export default app;

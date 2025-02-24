@@ -10,13 +10,13 @@ export function TopBar() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-10">
           <div className="flex space-x-8">
-            <Link href="/training" className="text-white text-sm hover:text-white/80">
+            <Link href="/events" className="text-white text-sm hover:text-white/80">
               Upcoming Training
             </Link>
-            <Link href="/parts" className="text-white text-sm hover:text-white/80">
-              Order Parts
+            <Link href="https://repairlinkshop.com/Account/Login?navistar" className="text-white text-sm hover:text-white/80">
+              RepairLink
             </Link>
-            <Link href="/portal" className="text-white text-sm hover:text-white/80">
+            <Link href="https://borderint.securepayments.cardpointe.com/pay?signature=PrJ5QAhsV1VNgdM8Jr17CAogO5Lz%2FXBwdHxhN5WRtD0rRUVCVNa%2FM6C5hxmbDI6xs%3D&paymentType=cc" className="text-white text-sm hover:text-white/80">
               Customer Portal
             </Link>
           </div>

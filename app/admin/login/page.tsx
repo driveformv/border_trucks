@@ -22,7 +22,7 @@ export default function AdminLogin() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const idToken = await userCredential.user.getIdToken();
       
-      Cookies.set('session', idToken, { 
+      Cookies.set('__session', idToken, { 
         expires: 7,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict'

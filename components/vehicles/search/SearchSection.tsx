@@ -32,26 +32,24 @@ export function SearchSection({ onSearch, onClear, searchFilters, filterSections
   const [filters, setFilters] = useState<Record<string, string[]>>({});
 
   const handleFilterClick = (category: string, value: string) => {
-    setFilters(prev => {
-      const currentValues = prev[category] || [];
-      const newValues = currentValues.includes(value)
-        ? currentValues.filter(v => v !== value)
-        : [...currentValues, value];
+    const newFilters = { ...filters };
+    const currentValues = newFilters[category] || [];
+    const newValues = currentValues.includes(value)
+      ? currentValues.filter(v => v !== value)
+      : [...currentValues, value];
 
-      const newFilters = { ...prev };
-      if (newValues.length > 0) {
-        newFilters[category] = newValues;
-      } else {
-        delete newFilters[category];
-      }
+    if (newValues.length > 0) {
+      newFilters[category] = newValues;
+    } else {
+      delete newFilters[category];
+    }
 
-      // Immediately trigger search with new filters
-      onSearch({
-        searchTerm,
-        ...newFilters
-      });
-
-      return newFilters;
+    setFilters(newFilters);
+    
+    // Trigger search with new filters after state update
+    onSearch({
+      searchTerm,
+      ...newFilters
     });
   };
 

@@ -26,6 +26,7 @@ export function Footer() {
               <li><Link href="/fleetrite" className="text-gray-400 hover:text-white">Fleetrite Parts</Link></li>
               <li><Link href="/services" className="text-gray-400 hover:text-white">Services</Link></li>
               <li><Link href="/financing" className="text-gray-400 hover:text-white">Financing</Link></li>
+              <li><Link href="/events" className="text-gray-400 hover:text-white">Events</Link></li>
             </ul>
           </div>
 
