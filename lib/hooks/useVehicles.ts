@@ -141,7 +141,7 @@ export function useVehicles(includeInactive: boolean = false) {
         title: 'Type',
         type: 'checkbox',
         options: Object.entries(counts.type).map(([value, count]) => ({
-          label: value,
+          label: value.charAt(0).toUpperCase() + value.slice(1),
           value: value.toLowerCase(),
           count: count as number
         }))

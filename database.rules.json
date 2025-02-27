@@ -28,6 +28,10 @@
       ".read": true,
       ".write": true
     },
+    "serviceRequests": {
+      ".read": "auth != null",
+      ".write": true
+    },
     "admin": {
       "users": {
         ".read": "auth != null",

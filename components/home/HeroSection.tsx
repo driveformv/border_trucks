@@ -42,7 +42,7 @@ export function HeroSection() {
               size="lg"
               className="min-w-[200px]"
             >
-              <Link href="/service">SCHEDULE SERVICE</Link>
+              <Link href="/services/schedule">SCHEDULE SERVICE</Link>
             </Button>
           </div>
         </div>

@@ -16,14 +16,15 @@ export default function VehicleDetailPage({ params }: { params: { id: string } }
 
   useEffect(() => {
     const id = params.id;
-    const type = id.startsWith('T') ? 'trucks' : 'trailers';
-    const vehicleRef = ref(db, `vehicles/${type}/${id}`);
-
-    const unsubscribe = onValue(vehicleRef, (snapshot) => {
-      const data = snapshot.val();
+    
+    // Try to load from trucks first
+    const trucksRef = ref(db, `vehicles/trucks/${id}`);
+    
+    const processVehicleData = (data: any, type: 'truck' | 'trailer') => {
       if (data) {
         const vehicleData = {
           ...data,
+          type, // Explicitly set the type
           images: (data.images || []).map((img: string | VehicleImage, index: number) => 
             typeof img === 'string' ? {
               id: `img-${index}`,
@@ -36,11 +37,36 @@ export default function VehicleDetailPage({ params }: { params: { id: string } }
           status: data.status
         };
         setVehicle(vehicleData);
+        setLoading(false);
+        return true;
       }
-      setLoading(false);
+      return false;
+    };
+
+    // First try trucks
+    const unsubscribeTrucks = onValue(trucksRef, (snapshot) => {
+      const data = snapshot.val();
+      const found = processVehicleData(data, 'truck');
+      
+      // If not found in trucks, try trailers
+      if (!found) {
+        const trailersRef = ref(db, `vehicles/trailers/${id}`);
+        const unsubscribeTrailers = onValue(trailersRef, (snapshot) => {
+          const data = snapshot.val();
+          const found = processVehicleData(data, 'trailer');
+          
+          // If not found in trailers either, set loading to false
+          if (!found) {
+            setLoading(false);
+          }
+        });
+        
+        // Clean up trailers listener when component unmounts
+        return () => unsubscribeTrailers();
+      }
     });
 
-    return () => unsubscribe();
+    return () => unsubscribeTrucks();
   }, [params.id]);
 
   if (loading) {
@@ -110,21 +136,39 @@ export default function VehicleDetailPage({ params }: { params: { id: string } }
             {/* Quick Info */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="text-sm text-gray-500">Mileage</div>
-                <div className="font-semibold">{vehicle.mileage?.toLocaleString()} mi</div>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="text-sm text-gray-500">Engine</div>
-                <div className="font-semibold">{vehicle.engineMake} {vehicle.engineModel}</div>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <div className="text-sm text-gray-500">Transmission</div>
-                <div className="font-semibold">{vehicle.transmission}</div>
-              </div>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
                 <div className="text-sm text-gray-500">Condition</div>
                 <div className="font-semibold">{vehicle.condition}</div>
               </div>
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                <div className="text-sm text-gray-500">Mileage</div>
+                <div className="font-semibold">{vehicle.mileage?.toLocaleString() || 'N/A'} mi</div>
+              </div>
+              
+              {vehicle.type === 'trailer' ? (
+                // Trailer-specific information
+                <>
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <div className="text-sm text-gray-500">Trailer Type</div>
+                    <div className="font-semibold">{vehicle.trailerType || 'N/A'}</div>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <div className="text-sm text-gray-500">Length</div>
+                    <div className="font-semibold">{vehicle.length || 'N/A'}</div>
+                  </div>
+                </>
+              ) : (
+                // Truck-specific information
+                <>
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <div className="text-sm text-gray-500">Engine</div>
+                    <div className="font-semibold">{vehicle.engineMake} {vehicle.engineModel}</div>
+                  </div>
+                  <div className="bg-white p-4 rounded-lg shadow-sm">
+                    <div className="text-sm text-gray-500">Transmission</div>
+                    <div className="font-semibold">{vehicle.transmission}</div>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Description */}

@@ -28,7 +28,7 @@ export function ServicePartsSection() {
               </ul>
             </div>
             <Button asChild className="w-full md:w-auto">
-              <Link href="/services">Schedule Service</Link>
+              <Link href="/services/schedule">Schedule Service</Link>
             </Button>
           </Card>
 

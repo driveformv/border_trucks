@@ -37,13 +37,7 @@ export function VehicleDetailClient({ vehicle }: VehicleDetailClientProps) {
       <VehicleInquiryModal
         open={showInquiryModal}
         onClose={() => setShowInquiryModal(false)}
-        vehicleInfo={{
-          id: vehicle.id,
-          year: vehicle.year,
-          make: vehicle.make,
-          model: vehicle.model,
-          stockNumber: vehicle.stockNumber,
-        }}
+        vehicle={vehicle}
       />
     </div>
   );

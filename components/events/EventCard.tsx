@@ -53,7 +53,10 @@ export default function EventCard({ event }: EventCardProps) {
               </span>
             </div>
           )}
-          <p className="mt-3 text-gray-700">{event.description}</p>
+          <div 
+            className="mt-3 text-gray-700 prose prose-sm max-w-none" 
+            dangerouslySetInnerHTML={{ __html: event.description }}
+          />
         </div>
       </CardContent>
       <CardFooter>
